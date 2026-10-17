@@ -1,0 +1,12 @@
+# Raw personal exports (only the generated summaries in assets/ are published)
+data/
+
+# Local tooling and secrets
+.claude/
+.vercel/
+.env*
+node_modules/
+.DS_Store
+
+# Old first draft
+v1-departure-board.html

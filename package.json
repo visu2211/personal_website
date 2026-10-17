@@ -1,0 +1,9 @@
+{
+  "name": "vishal-kanala-portfolio",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "psn-api": "2.18.1"
+  }
+}
