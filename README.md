@@ -24,16 +24,10 @@ Static site plus one Vercel Function (`api/psn.js`) for PlayStation activity.
 The token lasts about 2 months. When the PS5 card says "Offline", repeat steps 2–4.
 
 ## Strava setup (one time, free)
-1. Go to https://www.strava.com/settings/api and create an app. Any name works; set "Authorization Callback Domain" to `localhost`.
-2. Note the **Client ID** and **Client Secret**.
-3. Open this URL (put in your Client ID), click Authorize, and copy the `code=` value from the address bar it sends you to:
-   `https://www.strava.com/oauth/authorize?client_id=YOUR_ID&response_type=code&redirect_uri=http://localhost&scope=read,activity:read&approval_prompt=force`
-4. Trade the code for a refresh token in your terminal:
-   `curl -X POST https://www.strava.com/oauth/token -d client_id=YOUR_ID -d client_secret=YOUR_SECRET -d code=THE_CODE -d grant_type=authorization_code`
-   Copy `refresh_token` from the response.
-5. Add all three to Vercel, then redeploy:
-   `npx vercel env add STRAVA_CLIENT_ID production` (and the same for `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`).
-Keep the secret and tokens private: never commit them or paste them anywhere public.
+1. Create an app at https://www.strava.com/settings/api. Any name and category; set **Authorization Callback Domain** to `localhost`.
+2. In this folder, run `node scripts/connect-strava.mjs` and follow the prompts. It links the folder to Vercel if needed,
+   opens Strava's Authorize page, and saves `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, and `STRAVA_REFRESH_TOKEN` to Vercel
+   without printing or storing them. Then it offers to redeploy.
 
 ## Hevy stats (free, no Pro)
 1. Hevy app → Profile → ⚙︎ Settings → Export & Import Data → Export Workouts.
