@@ -82,6 +82,22 @@
   .heat i { aspect-ratio: 1; border-radius: 3px; background: var(--night); border: 1px solid color-mix(in srgb, var(--moss) 60%, transparent); }
   .heat i.on { background: var(--ember); border-color: var(--ember); box-shadow: 0 0 6px color-mix(in srgb, var(--ember) 50%, transparent); }
   .heat i.today { outline: 1px solid var(--lichen); outline-offset: 1px; }
+  /* weekly miles chart (same 20 Sunday-start weeks as the lifting calendar) */
+  .wk { position: relative; }
+  .wk svg { display: block; width: 100%; height: 132px; overflow: visible; }
+  .wk .grid { stroke: var(--moss); stroke-width: 1; }
+  .wk .grid.base { stroke: color-mix(in srgb, var(--lichen) 55%, transparent); }
+  .wk .tick { font: 10.5px var(--f-mono); fill: var(--lichen); }
+  .wk .bar { fill: var(--ember); transition: opacity .15s; }
+  .wk .bar.zero { fill: var(--moss); }
+  .wk .hit { fill: transparent; cursor: default; }
+  .wk:hover .bar:not(.on) { opacity: .45; }
+  .wk .peak { font: 500 11px var(--f-mono); fill: var(--bone); }
+  .wk-tip { position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, calc(-100% - 10px)); white-space: nowrap;
+    font: 12px var(--f-body); color: var(--bone); background: #141f1bf2; border: 1px solid var(--moss); border-radius: 8px; padding: 6px 10px; box-shadow: 0 8px 20px -10px #000; }
+  .wk-tip b { font-family: var(--f-mono); font-weight: 500; color: var(--bone); }
+  .wk-tip span { color: var(--lichen); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .tlist { list-style: none; margin: 0; padding: 0; display: grid; }
   .tlist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--moss) 60%, transparent); font-size: 15px; }
   .tlist li:last-child { border-bottom: 0; }
@@ -149,6 +165,7 @@
     .games .when-col { display: none; }
   }
 </style>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <canvas class="topo" id="topo" aria-hidden="true"></canvas>
@@ -267,6 +284,11 @@
         </div>
         <div class="tstats" id="run-stats">
           <div><b>—</b><span>miles, last 4 weeks</span></div><div><b>—</b><span>miles this year</span></div><div><b>—</b><span>miles all time</span></div>
+        </div>
+        <div class="wk-wrap">
+          <div class="tlabel">Weekly miles · last 20 weeks</div>
+          <div class="wk" id="wk"><svg id="wk-svg" role="img" aria-label="Bar chart of miles run each week for the last 20 weeks"></svg><div class="wk-tip" id="wk-tip" hidden></div></div>
+          <table class="sr" id="wk-table"><caption>Miles run per week</caption><thead><tr><th>Week of</th><th>Miles</th><th>Runs</th></tr></thead><tbody></tbody></table>
         </div>
         <div id="run-detail"><div class="tlabel">Recent runs</div><ol class="tlist" id="run-list"><li class="muted">Loading runs…</li></ol></div>
         <div class="tfoot" id="run-foot">From my Strava log</div>
@@ -420,13 +442,69 @@
       <div class="tfoot" style="margin-top:12px">From my Hevy log, updated ${shortDate(H.generated)}</div>`;
   })();
 
+
+  /* ---------- weekly miles bar chart ---------- */
+  function drawWeeks(d) {
+    const svg = $('wk-svg'), tip = $('wk-tip'), wrap = $('wk');
+    if (!wrap._ro) { let last = 0; wrap._ro = new ResizeObserver(() => { if (wrap.clientWidth !== last) { last = wrap.clientWidth; drawWeeks(d); } }); wrap._ro.observe(wrap); }
+    const today = new Date(); today.setHours(12, 0, 0, 0);
+    const start = new Date(today - (7 * 19 + today.getDay()) * DAY);          // same Sunday as the lifting calendar
+    const weeks = Array.from({ length: 20 }, (_, w) => ({ start: new Date(+start + w * 7 * DAY), miles: 0, runs: 0 }));
+    for (const [k, mi] of Object.entries(d.days || {})) {
+      const t = new Date(k + 'T12:00'), w = Math.floor((t - start) / (7 * DAY));
+      if (w >= 0 && w < 20) { weeks[w].miles += mi; weeks[w].runs += 1; }
+    }
+    const max = Math.max(...weeks.map((w) => w.miles));
+    const step = [1, 2, 2.5, 5, 10, 20, 25, 50].find((s) => max / s <= 3) || 50;   // ≤ 3 gridlines, at round values
+    const top = Math.max(step, Math.ceil(max / step) * step);
+    const W = wrap.clientWidth || 360, H = 132, padL = 26, padB = 18, padT = 14, plotW = W - padL, plotH = H - padB - padT;
+    const gap = 2, bw = plotW / 20 - gap, y = (v) => padT + plotH - (v / top) * plotH;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const r = Math.min(4, bw / 2);
+    const bar = (x, v) => { const h = Math.max(0, (v / top) * plotH), yb = padT + plotH;
+      if (h < 0.5) return '';
+      const rr = Math.min(r, h);
+      return `M${x} ${yb}V${yb - h + rr}Q${x} ${yb - h} ${x + rr} ${yb - h}H${x + bw - rr}Q${x + bw} ${yb - h} ${x + bw} ${yb - h + rr}V${yb}Z`; };
+    let g = '';
+    for (let v = 0; v <= top + 1e-9; v += step) {
+      g += `<line class="grid${v === 0 ? ' base' : ''}" x1="${padL}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${padL - 6}" y="${y(v) + 3.5}" text-anchor="end">${+v.toFixed(1)}</text>`;
+    }
+    const fmtWk = (dt) => dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const peak = weeks.reduce((a, w, i) => (w.miles > weeks[a].miles ? i : a), 0);
+    let marks = '';
+    weeks.forEach((w, i) => {
+      const x = padL + i * (bw + gap) + gap / 2;
+      marks += w.miles > 0 ? `<path class="bar" data-i="${i}" d="${bar(x, w.miles)}"/>` : `<rect class="bar zero" data-i="${i}" x="${x}" y="${padT + plotH - 2}" width="${bw}" height="2" rx="1"/>`;
+      marks += `<rect class="hit" data-i="${i}" x="${x - gap / 2}" y="${padT}" width="${bw + gap}" height="${plotH}"/>`;
+    });
+    // one direct label: the peak week
+    const px = padL + peak * (bw + gap) + gap / 2 + bw / 2;
+    const peakLabel = max > 0 ? `<text class="peak" x="${px}" y="${y(weeks[peak].miles) - 5}" text-anchor="middle">${weeks[peak].miles.toFixed(1)}</text>` : '';
+    // month labels along the bottom, at the first week that starts in each month
+    let months = '', lastM = -1;
+    weeks.forEach((w, i) => { const m = w.start.getMonth(); if (m !== lastM) { lastM = m; if (i < 19) months += `<text class="tick" x="${padL + i * (bw + gap) + gap / 2}" y="${H - 3}">${w.start.toLocaleDateString('en-US', { month: 'short' })}</text>`; } });
+    svg.innerHTML = g + marks + peakLabel + months;
+    $('wk-table').querySelector('tbody').innerHTML = weeks.map((w) => `<tr><td>${fmtWk(w.start)}</td><td>${w.miles.toFixed(2)}</td><td>${w.runs}</td></tr>`).join('');
+
+    const show = (i, cx) => {
+      const w = weeks[i];
+      svg.querySelectorAll('.bar').forEach((b) => b.classList.toggle('on', +b.dataset.i === i));
+      tip.innerHTML = `<span>Week of ${fmtWk(w.start)}</span> · <b>${w.miles.toFixed(1)} mi</b> <span>· ${w.runs} run${w.runs === 1 ? '' : 's'}</span>`;
+      const x = padL + i * (bw + gap) + gap / 2 + bw / 2;
+      tip.style.left = Math.min(W - 80, Math.max(80, x)) + 'px'; tip.style.top = y(w.miles) + 'px'; tip.hidden = false;
+    };
+    svg.onpointermove = (e) => { const t = e.target.closest('[data-i]'); if (t) show(+t.dataset.i); };
+    svg.onpointerleave = () => { tip.hidden = true; svg.querySelectorAll('.bar').forEach((b) => b.classList.remove('on')); };
+  }
+
   (async () => {
     const pace = (s) => s ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}/mi` : '';
     try {
       const d = window.STRAVA; // published from the private upload page
       if (!d) throw new Error('no data');
       statRow($('run-stats'), [d.recent?.miles, fmt(d.ytd?.miles), fmt(d.all?.miles)]);
-      $('run-list').innerHTML = d.runs.length ? d.runs.map((x) => `<li><a class="nm" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a><span class="num">${x.miles} mi</span>
+      drawWeeks(d);
+      $('run-list').innerHTML = d.runs.length ? d.runs.slice(0, 3).map((x) => `<li><a class="nm" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a><span class="num">${x.miles} mi</span>
         <span class="sub">${shortDate(x.date)} · ${pace(x.paceSecPerMi)}${x.elevFt ? ' · ' + x.elevFt + ' ft gain' : ''}</span></li>`).join('')
         : '<li class="muted">No runs logged recently.</li>';
       $('run-foot').textContent = `From my Strava log · ${fmt(d.ytd?.runs)} runs this year · updated ${shortDate(d.generated)}`;
