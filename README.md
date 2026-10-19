@@ -23,17 +23,20 @@ Static site plus one Vercel Function (`api/psn.js`) for PlayStation activity.
 4. Add it to Vercel:  `npx vercel env add PSN_NPSSO production`  (paste when prompted), then redeploy.
 The token lasts about 2 months. When the PS5 card says "Offline", repeat steps 2–4.
 
-## Strava setup (one time, free)
-1. Create an app at https://www.strava.com/settings/api. Any name and category; set **Authorization Callback Domain** to `localhost`.
-2. In this folder, run `node scripts/connect-strava.mjs` and follow the prompts. It links the folder to Vercel if needed,
-   opens Strava's Authorize page, and saves `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, and `STRAVA_REFRESH_TOKEN` to Vercel
-   without printing or storing them. Then it offers to redeploy.
+## Strava stats (free export, no API subscription)
+1. Strava → Settings → My Account → Download or Delete Your Account → **Request Your Archive**. Strava emails a zip.
+2. Leave it in Downloads (`export_XXXXXXX.zip`). The daily job below picks it up, or run
+   `node scripts/strava-stats.mjs ~/Downloads/export_XXXXXXX.zip` yourself. Only `activities.csv` is read.
+
+## Automatic refresh job
+`scripts/install-refresh-job.sh` installs a daily 10:00 job (launchd) that rebuilds the Hevy and Strava stats whenever a
+newer export appears in Downloads, then commits and pushes so Vercel redeploys. Every 14 days it shows a Mac notification
+reminding you to export from both apps. Log: `data/refresh.log`. Remove with `scripts/install-refresh-job.sh --remove`.
 
 ## Hevy stats (free, no Pro)
 1. Hevy app → Profile → ⚙︎ Settings → Export & Import Data → Export Workouts.
 2. Save the file as `data/hevy-workouts.csv`.
-3. Run `node scripts/hevy-stats.mjs`. It writes `assets/hevy-data.js`.
-4. Redeploy. Repeat whenever you want fresh numbers.
+3. Leave `workouts.csv` in Downloads for the daily job, or run `node scripts/hevy-stats.mjs` yourself.
 
 ## Deploy
 ```

@@ -286,7 +286,7 @@
           <div><b>—</b><span>miles, last 4 weeks</span></div><div><b>—</b><span>miles this year</span></div><div><b>—</b><span>miles all time</span></div>
         </div>
         <div id="run-detail"><div class="tlabel">Recent runs</div><ol class="tlist" id="run-list"><li class="muted">Loading runs…</li></ol></div>
-        <div class="tfoot" id="run-foot">Live from Strava</div>
+        <div class="tfoot" id="run-foot">From my Strava log</div>
       </article>
     </div>
   </section>
@@ -343,6 +343,7 @@
 <script src="assets/site.js"></script>
 <script src="assets/chess.js"></script>
 <script src="assets/hevy-data.js"></script>
+<script src="assets/strava-data.js"></script>
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
@@ -450,14 +451,13 @@
   (async () => {
     const pace = (s) => s ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}/mi` : '';
     try {
-      const r = await fetch('/api/strava');
-      if (!r.ok) throw new Error(r.status);
-      const d = await r.json();
+      const d = window.STRAVA; // built from my Strava export by scripts/strava-stats.mjs
+      if (!d) throw new Error('no data');
       statRow($('run-stats'), [d.recent?.miles, fmt(d.ytd?.miles), fmt(d.all?.miles)]);
       $('run-list').innerHTML = d.runs.length ? d.runs.map((x) => `<li><a class="nm" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a><span class="num">${x.miles} mi</span>
         <span class="sub">${shortDate(x.date)} · ${pace(x.paceSecPerMi)}${x.elevFt ? ' · ' + x.elevFt + ' ft gain' : ''}</span></li>`).join('')
         : '<li class="muted">No runs logged recently.</li>';
-      $('run-foot').textContent = `Live from Strava · ${fmt(d.ytd?.runs)} runs this year`;
+      $('run-foot').textContent = `From my Strava log · ${fmt(d.ytd?.runs)} runs this year · updated ${shortDate(d.generated)}`;
     } catch {
       $('run-list').innerHTML = '<li class="muted">Recent runs are unavailable right now. See them on Strava.</li>';
       $('run-foot').textContent = '';
