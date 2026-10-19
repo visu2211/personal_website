@@ -127,24 +127,7 @@
   .vb-card .ico { grid-row: span 2; }
   .vb-card p { grid-column: 2; margin-top: 0; }
   .vb-card .clip { grid-column: 3; grid-row: 1 / span 2; margin-top: 0; }
-  .psn { grid-column: 1 / -1; }
-  .psn-head { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
-  .psn-id { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--lichen); }
-  .psn-id img { width: 40px; height: 40px; border-radius: 50%; }
-  .psn-id b { color: var(--bone); font-weight: 600; display: block; }
-  .trophy { font-family: var(--f-mono); font-size: 12px; color: var(--lichen); }
-  .trophy b { color: var(--firefly); display: inline; font-weight: 500; }
-  .shelf { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(132px, 1fr); gap: 14px; margin-top: 24px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
-  .cover { scroll-snap-align: start; display: flex; flex-direction: column; gap: 8px; min-width: 0; text-decoration: none; }
-  .cover .art { aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--night); border: 1px solid var(--moss); transition: transform .3s, border-color .3s; }
-  .cover:hover .art { transform: translateY(-4px); border-color: var(--ember); }
-  .cover img { width: 100%; height: 100%; object-fit: cover; }
-  .cover b { font-size: 14px; font-weight: 600; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .cover small { font-family: var(--f-mono); font-size: 11px; color: var(--lichen); }
-  .cover.skeleton { aspect-ratio: 1; border-radius: 10px; background: linear-gradient(90deg, var(--night) 0%, #1a2420 50%, var(--night) 100%) 0 0 / 200% 100%; animation: shimmer 1.4s linear infinite; }
-  @keyframes shimmer { to { background-position: -200% 0; } }
-  .psn-foot { margin-top: 14px; font-size: 13px; color: var(--lichen); }
-  .psn.offline .shelf { display: none; }
+  .games-card { grid-column: 1 / -1; }
   .album { margin-top: 18px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; padding: 26px 28px; border: 1px dashed var(--moss); border-radius: 18px; }
   .album h3 { font-size: 26px; }
   .album p { margin: 4px 0 0; color: var(--lichen); }
@@ -314,21 +297,11 @@
           <span class="arrow" aria-hidden="true">↗</span>
         </a>
       </article>
-      <article class="hobby psn reveal" id="games">
-        <div class="psn-head">
-          <div>
-            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 8h12a4 4 0 0 1 4 4v1a4 4 0 0 1-7 2.6L14 14h-4l-1 1.6A4 4 0 0 1 2 13v-1a4 4 0 0 1 4-4ZM7 11v3M5.5 12.5h3M16 11.5h.01M18 13.5h.01"/></svg>
-            <h3>Video games</h3>
-            <p>How I unwind after a long week, especially anything I can play with friends. This is what's been on my PS5 lately.</p>
-          </div>
-          <div class="psn-id" id="psn-id">
-            <span class="live" id="psn-status"><i></i>Connecting</span>
-          </div>
-        </div>
-        <div class="shelf" id="psn-shelf">
-          <div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div>
-        </div>
-        <div class="psn-foot" id="psn-foot">Live from PlayStation Network</div>
+      <article class="hobby games-card reveal" id="games">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 8h12a4 4 0 0 1 4 4v1a4 4 0 0 1-7 2.6L14 14h-4l-1 1.6A4 4 0 0 1 2 13v-1a4 4 0 0 1 4-4ZM7 11v3M5.5 12.5h3M16 11.5h.01M18 13.5h.01"/></svg>
+        <h3>Video games</h3>
+        <p>How I unwind after a long week, especially anything I can play with friends.</p>
+        <div class="tagline">Player 2 has entered</div>
       </article>
     </div>
     <div class="album reveal">
@@ -426,8 +399,7 @@
   const statRow = (el, vals) => [...el.children].forEach((d, i) => { d.querySelector('b').textContent = vals[i] ?? '—'; });
 
   (async () => {
-    let H = window.HEVY;
-    try { const r = await fetch('/api/hevy'); if (r.ok) H = await r.json(); } catch {} // live if a Hevy Pro key is set
+    const H = window.HEVY; // published from the private upload page
     const heat = $('heat'), today = new Date(); today.setHours(12);
     const start = new Date(today - (7 * 19 + today.getDay()) * DAY); // 20 week columns, Sunday-first
     let cells = '';
@@ -445,13 +417,13 @@
       <div class="tlabel">Recent workouts</div>
       <ol class="tlist">${H.recent.slice(0, 3).map((w) => `<li><span class="nm">${esc(w.title)}</span><span class="num">${fmt(w.volumeLbs)} lb</span>
         <span class="sub">${shortDate(w.date)} · ${w.exercises} exercises · ${w.sets} sets${w.minutes ? ' · ' + w.minutes + ' min' : ''}</span></li>`).join('')}</ol>
-      <div class="tfoot" style="margin-top:12px">${H.live ? 'Live from Hevy' : 'From my Hevy log, updated ' + shortDate(H.generated)}</div>`;
+      <div class="tfoot" style="margin-top:12px">From my Hevy log, updated ${shortDate(H.generated)}</div>`;
   })();
 
   (async () => {
     const pace = (s) => s ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}/mi` : '';
     try {
-      const d = window.STRAVA; // built from my Strava export by scripts/strava-stats.mjs
+      const d = window.STRAVA; // published from the private upload page
       if (!d) throw new Error('no data');
       statRow($('run-stats'), [d.recent?.miles, fmt(d.ytd?.miles), fmt(d.all?.miles)]);
       $('run-list').innerHTML = d.runs.length ? d.runs.map((x) => `<li><a class="nm" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a><span class="num">${x.miles} mi</span>
@@ -464,28 +436,6 @@
     }
   })();
 
-  /* ---------- PS5 activity (served by /api/psn on Vercel) ---------- */
-  (async () => {
-    const shelf = $('psn-shelf'), status = $('psn-status'), card = $('games');
-    const days = (iso) => { if (!iso) return ''; const d = Math.floor((Date.now() - new Date(iso)) / 86400000); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 30 ? `${d}d ago` : new Date(iso).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }); };
-    try {
-      const r = await fetch('/api/psn');
-      if (!r.ok) throw new Error(r.status);
-      const p = await r.json();
-      status.classList.toggle('on', p.online);
-      status.innerHTML = `<i></i>${p.online ? (p.nowPlaying ? 'Playing ' + esc(p.nowPlaying) : 'Online') : 'Last online ' + days(p.lastOnline)}`;
-      $('psn-id').insertAdjacentHTML('afterbegin', `${p.avatar ? `<img src="${esc(p.avatar)}" alt="" width="40" height="40">` : ''}<div><b>${esc(p.onlineId || 'PlayStation')}</b>${p.trophyLevel ? `<span class="trophy">Trophy level <b>${esc(p.trophyLevel)}</b>${p.trophies ? ` · ${p.trophies.platinum} plat · ${p.trophies.gold} gold` : ''}</span>` : ''}</div>`);
-      shelf.innerHTML = p.games.length ? p.games.slice(0, 8).map((g) => `
-        <div class="cover"><div class="art"><img src="${esc(g.image)}" alt="" loading="lazy"></div>
-          <b>${esc(g.name)}</b><small>${g.platform}${g.hours ? ' · ' + g.hours + ' hrs' : ''} · ${days(g.lastPlayed)}</small></div>`).join('')
-        : '<p style="color:var(--lichen)">No recent games to show.</p>';
-      $('psn-foot').textContent = 'Live from PlayStation Network · refreshes every 15 minutes';
-    } catch {
-      card.classList.add('offline');
-      status.innerHTML = '<i></i>Offline';
-      $('psn-foot').textContent = 'My PlayStation activity is unavailable right now. Check back soon.';
-    }
-  })();
 
 })();
 </script>

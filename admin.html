@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Ranger Station · Vishal Kanala</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 3.5 16 8.5 20 3.5' fill='none' stroke='%23ff7b3a' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath fill='%23ff7b3a' fill-rule='evenodd' d='M16 8.5 3.5 27h25L16 8.5ZM16 14.5 12.2 27h7.6L16 14.5Z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* Private upload page. Not linked anywhere and hidden from search engines; publishing needs the password. */
+  main { padding-block: clamp(48px, 8vw, 96px) 80px; }
+  .head h1 { font-size: clamp(44px, 7vw, 76px); line-height: 1; margin-top: 14px; }
+  .head h1 span { color: var(--ember); }
+  .head p { color: var(--lichen); max-width: 56ch; margin: 14px 0 0; }
+  .panel { margin-top: 28px; padding: 24px; border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); }
+  .signin { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; max-width: 520px; }
+  .signin label { width: 100%; font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--lichen); }
+  input[type=password] { flex: 1 1 240px; min-width: 0; font: 500 15px var(--f-body); color: var(--bone); background: var(--night); border: 1px solid var(--moss); border-radius: 10px; padding: 11px 14px; }
+  input[type=password]:focus { outline: 2px solid var(--ember); outline-offset: 2px; border-color: transparent; }
+  button.btn { cursor: pointer; font: 500 14px var(--f-body); }
+  button.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+  .msg { margin-top: 12px; font-size: 14px; min-height: 1.4em; }
+  .msg.err { color: var(--loss); } .msg.ok { color: var(--win); }
+  .drops { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+  .drop { display: flex; flex-direction: column; gap: 14px; padding: 22px; border: 1.5px dashed var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 85%, transparent); transition: border-color .2s, background .2s; min-width: 0; }
+  .drop.over { border-color: var(--ember); background: color-mix(in srgb, var(--ember) 8%, var(--pine)); }
+  .drop h2 { font-size: 28px; margin: 0; }
+  .drop .how { font-size: 14px; color: var(--lichen); margin: 0; }
+  .drop .how b { color: var(--bone); font-weight: 500; }
+  .pick { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font: 500 14px var(--f-body); color: var(--bone); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--moss); background: var(--night); width: fit-content; max-width: 100%; }
+  .pick:hover { border-color: var(--ember); color: var(--ember); }
+  .pick input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .pick:focus-within { outline: 2px solid var(--ember); outline-offset: 2px; }
+  .fname { font-family: var(--f-mono); font-size: 12px; color: var(--lichen); overflow-wrap: anywhere; }
+  .preview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--moss); }
+  .preview div { padding: 12px 0; min-width: 0; }
+  .preview div + div { padding-left: 14px; border-left: 1px solid var(--moss); }
+  .preview b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 28px; line-height: 1.05; }
+  .preview span { font-size: 12.5px; color: var(--lichen); }
+  .recent { margin: 0; padding: 0; list-style: none; font-size: 14px; display: grid; gap: 4px; color: #d4cfc0; }
+  .recent li { display: flex; justify-content: space-between; gap: 10px; }
+  .recent li span:last-child { font-family: var(--f-mono); font-size: 12px; color: var(--lichen); white-space: nowrap; }
+  .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: auto; }
+  .note { margin-top: 22px; font-size: 13px; color: var(--lichen); }
+  @media (max-width: 760px) { .drops { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<canvas class="topo" id="topo" aria-hidden="true"></canvas>
+<canvas class="topo" id="topo-lit" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<main class="wrap">
+  <header class="head">
+    <div class="eyebrow">Private · only for Vishal</div>
+    <h1>Ranger <span>station</span></h1>
+    <p>Drop in a new Hevy or Strava export to refresh the Training section on Beyond code. Your files are read in this browser and only the summary numbers are published.</p>
+  </header>
+
+  <section class="panel" id="signin-panel">
+    <form class="signin" id="signin">
+      <label for="pw">Password</label>
+      <input type="password" id="pw" autocomplete="current-password" required>
+      <button class="btn solid" type="submit">Unlock</button>
+    </form>
+    <div class="msg" id="signin-msg" role="status"></div>
+  </section>
+
+  <div id="tools" hidden>
+    <div class="drops">
+      <section class="drop" id="drop-hevy" data-kind="hevy">
+        <h2>Hevy</h2>
+        <p class="how">In the Hevy app: <b>Profile › Settings › Export &amp; Import Data › Export Workouts</b>. Then pick or drop <b>workouts.csv</b> here.</p>
+        <label class="pick"><input type="file" id="file-hevy" accept=".csv,text/csv">Choose workouts.csv</label>
+        <div class="fname" id="name-hevy"></div>
+        <div id="prev-hevy"></div>
+        <div class="actions"><button class="btn solid" type="button" id="pub-hevy" disabled>Publish Hevy stats</button></div>
+        <div class="msg" id="msg-hevy" role="status"></div>
+      </section>
+      <section class="drop" id="drop-strava" data-kind="strava">
+        <h2>Strava</h2>
+        <p class="how">On strava.com: <b>Settings › My Account › Download or Delete Your Account › Request Your Archive</b>. Then pick or drop the emailed <b>export_….zip</b> here.</p>
+        <label class="pick"><input type="file" id="file-strava" accept=".zip,application/zip,.csv">Choose export zip</label>
+        <div class="fname" id="name-strava"></div>
+        <div id="prev-strava"></div>
+        <div class="actions"><button class="btn solid" type="button" id="pub-strava" disabled>Publish Strava stats</button></div>
+        <div class="msg" id="msg-strava" role="status"></div>
+      </section>
+    </div>
+    <p class="note">From the Strava archive, only <span class="mono">activities.csv</span> is opened. Publishing updates the site in about a minute. <a href="beyond.html#training" style="color:var(--ember)">View the Training section →</a> · <button type="button" id="signout" style="all:unset;cursor:pointer;color:var(--ember)">Sign out</button></p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="assets/site.js"></script>
+<script type="module">
+import { hevySummary, stravaSummary } from './assets/training-stats.js';
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = (n) => (n == null ? '—' : n.toLocaleString('en-US'));
+const store = { get: () => { try { return sessionStorage.getItem('rs-pw') || ''; } catch { return ''; } }, set: (v) => { try { sessionStorage.setItem('rs-pw', v); } catch {} }, clear: () => { try { sessionStorage.removeItem('rs-pw'); } catch {} } };
+let password = '';
+const ready = { hevy: null, strava: null };
+
+async function api(body) {
+  const r = await fetch('/api/publish', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${password}` }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || `Something went wrong (${r.status}).`);
+  return j;
+}
+
+async function unlock(pw, quiet) {
+  password = pw;
+  try {
+    await api({ check: true });
+    store.set(pw); $('signin-panel').hidden = true; $('tools').hidden = false;
+  } catch (e) {
+    password = ''; store.clear();
+    if (!quiet) { $('signin-msg').className = 'msg err'; $('signin-msg').textContent = e.message; }
+  }
+}
+$('signin').addEventListener('submit', (e) => { e.preventDefault(); $('signin-msg').textContent = ''; unlock($('pw').value); });
+$('signout').addEventListener('click', () => { store.clear(); password = ''; $('tools').hidden = true; $('signin-panel').hidden = false; $('pw').value = ''; });
+if (store.get()) unlock(store.get(), true);
+
+/* ---------- reading files (all in the browser) ---------- */
+async function readExport(kind, file) {
+  if (kind === 'hevy') return hevySummary(await file.text());
+  if (/\.csv$/i.test(file.name)) return stravaSummary(await file.text());
+  const zip = await JSZip.loadAsync(file);
+  const entry = zip.file('activities.csv') || zip.file(/(^|\/)activities\.csv$/)[0];
+  if (!entry) throw new Error('No activities.csv in that zip. Is it the Strava archive?');
+  return stravaSummary(await entry.async('string'));
+}
+
+function preview(kind, d) {
+  if (kind === 'hevy') {
+    return `<div class="preview"><div><b>${fmt(d.totalWorkouts)}</b><span>workouts logged</span></div><div><b>${fmt(d.thisYear)}</b><span>this year</span></div><div><b>${fmt(d.last30)}</b><span>last 30 days</span></div></div>
+      <ul class="recent">${d.recent.slice(0, 3).map((w) => `<li><span>${esc(w.title)}</span><span>${esc(w.date)} · ${fmt(w.volumeLbs)} lb</span></li>`).join('')}</ul>`;
+  }
+  return `<div class="preview"><div><b>${d.recent.miles}</b><span>mi, last 4 weeks</span></div><div><b>${fmt(d.ytd.miles)}</b><span>mi this year</span></div><div><b>${fmt(d.all.miles)}</b><span>mi all time</span></div></div>
+    <ul class="recent">${d.runs.slice(0, 3).map((r) => `<li><span>${esc(r.name)}</span><span>${esc(r.date.slice(0, 10))} · ${r.miles} mi</span></li>`).join('')}</ul>`;
+}
+
+async function handle(kind, file) {
+  const msg = $(`msg-${kind}`);
+  ready[kind] = null; $(`pub-${kind}`).disabled = true; $(`prev-${kind}`).innerHTML = ''; msg.className = 'msg'; msg.textContent = 'Reading…';
+  $(`name-${kind}`).textContent = `${file.name} · ${(file.size / 1024).toFixed(0)} KB`;
+  try {
+    const d = await readExport(kind, file);
+    ready[kind] = d; $(`prev-${kind}`).innerHTML = preview(kind, d); $(`pub-${kind}`).disabled = false;
+    msg.textContent = 'Looks good. Check the numbers, then publish.';
+  } catch (e) { msg.className = 'msg err'; msg.textContent = e.message; }
+}
+
+for (const kind of ['hevy', 'strava']) {
+  const drop = $(`drop-${kind}`);
+  $(`file-${kind}`).addEventListener('change', (e) => e.target.files[0] && handle(kind, e.target.files[0]));
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) handle(kind, f); });
+  $(`pub-${kind}`).addEventListener('click', async () => {
+    const msg = $(`msg-${kind}`), btn = $(`pub-${kind}`);
+    btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Publishing…';
+    try {
+      const r = await api({ kind, data: ready[kind] });
+      msg.className = 'msg ok';
+      msg.innerHTML = `Published. The site updates in about a minute.${r.commit ? ` <a href="${esc(r.commit)}" target="_blank" rel="noopener" style="color:inherit">View commit ↗</a>` : ''}`;
+    } catch (e) { msg.className = 'msg err'; msg.textContent = e.message; btn.disabled = false; }
+  });
+}
+</script>
+</body>
+</html>
