@@ -2,7 +2,7 @@
 # Keeps the Training section fresh. Runs once a day via launchd (scripts/install-refresh-job.sh):
 #  - If a newer Hevy export (~/Downloads/workouts*.csv) or Strava export (~/Downloads/export_*.zip)
 #    has appeared since the last run, rebuilds assets/hevy-data.js / assets/strava-data.js,
-#    commits them, and pushes, so Vercel redeploys vishalkanala.com.
+#    commits and pushes them, then deploys vishalkanala.com with the Vercel CLI.
 #  - Every 14 days, shows a reminder to export new data from both apps.
 # Neither app offers free automatic downloads, so exporting stays a manual tap; everything after is automatic.
 set -u
@@ -39,8 +39,9 @@ if (( ${#changed} )) && ! git diff --quiet -- assets/hevy-data.js assets/strava-
   git commit -q -m "Refresh training stats (${(j:, :)changed})
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git push -q >> "$LOG" 2>&1 \
+    && npx --yes vercel --prod --yes >> "$LOG" 2>&1 \
     && { log "Published ${(j:, :)changed}"; notify "vishalkanala.com" "Training stats updated from ${(j: and :)changed}."; } \
-    || { log "Push failed"; notify "vishalkanala.com" "Stats rebuilt but the push to GitHub failed. See data/refresh.log."; }
+    || { log "Push failed"; notify "vishalkanala.com" "Stats rebuilt but publishing failed. See data/refresh.log."; }
 elif (( ${#changed} )); then
   log "New export(s) from ${(j:, :)changed}, no stat changes"
 fi
