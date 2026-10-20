@@ -43,6 +43,8 @@
   #globe.loading::after { content: "Loading the globe…"; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--lichen); }
   .globe-legend { position: absolute; left: 20px; top: 18px; display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--lichen); pointer-events: none; }
   .globe-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 8px currentColor; }
+  .globe-credit { position: absolute; right: 16px; bottom: 12px; font: 10.5px var(--f-mono); color: var(--lichen); opacity: .7; }
+  .globe-credit a { color: inherit; }
   .globe-hint { position: absolute; right: 20px; top: 18px; font-family: var(--f-mono); font-size: 11px; color: var(--lichen); pointer-events: none; transition: opacity .6s; }
   .place-card { position: absolute; left: 20px; bottom: 20px; width: min(340px, calc(100% - 40px)); padding: 18px; border-radius: 16px;
     background: color-mix(in srgb, var(--pine) 88%, transparent); backdrop-filter: blur(10px); border: 1px solid var(--moss); box-shadow: 0 20px 50px -20px #000;
@@ -66,6 +68,11 @@
     background: color-mix(in srgb, var(--pine) 80%, transparent); border: 1px solid var(--moss); border-radius: 999px; padding: 7px 13px; cursor: pointer; transition: color .2s, border-color .2s; }
   .place-chips button i { width: 7px; height: 7px; border-radius: 50%; }
   .place-chips button:hover, .place-chips button[aria-pressed="true"] { color: var(--bone); border-color: var(--ember); }
+  /* selected place label: a page element in the site font, pinned to the globe (no transform transitions, so it never drifts) */
+  .glabel { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; will-change: transform; }
+  .glabel span { display: block; transform: translate(-50%, calc(-100% - 12px)); white-space: nowrap; font: 600 13px var(--f-body); letter-spacing: .01em; color: var(--bone);
+    background: #0d1512e6; border: 1px solid var(--moss); border-radius: 999px; padding: 4px 10px; box-shadow: 0 6px 16px -8px #000; animation: glIn .35s ease-out; }
+  @keyframes glIn { from { opacity: 0; } }
   .globe-fallback { margin: 0; border: 0; border-radius: 0; }
   @media (max-width: 640px) {
     .place-card { position: static; width: auto; margin: 0 12px 12px; animation: none; }
@@ -144,6 +151,7 @@
         <span><i style="background:var(--k-home)"></i>Home</span><span><i style="background:var(--k-school)"></i>School</span>
         <span><i style="background:var(--k-work)"></i>Work</span><span><i style="background:var(--k-visited)"></i>Visited</span>
       </div>
+      <div class="globe-credit">Earth at night: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>, CC BY 4.0</div>
       <div class="globe-hint" id="globe-hint">Drag to spin · tap a place</div>
       <aside class="place-card" id="place-card" hidden aria-live="polite"></aside>
       <div class="map globe-fallback" id="globe-fallback" hidden>
@@ -287,7 +295,7 @@
   const KCOL = { home: '#ff7b3a', school: '#e9e48a', work: '#7fcf8f', visited: '#93a397' };
   const KLABEL = { home: 'Home', school: 'School', work: 'Work', visited: 'Visited' };
   let world = null, selected = null;
-  const SEL = { p: null };
+  const SEL = { p: null, r: 0.36 };
 
   $('place-chips').innerHTML = places.map((p, i) => `<button type="button" data-i="${i}" aria-pressed="false"><i style="background:${KCOL[KIND(p)]}"></i>${esc(p.name)}</button>`).join('');
   $('place-chips').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) select(+b.dataset.i); });
@@ -309,13 +317,13 @@
       <div class="pfoot"><span class="mono" style="color:var(--lichen);font-size:12px">${n ? n + ' photo' + (n > 1 ? 's' : '') : 'Photos coming soon'}</span><a href="#journal" data-jump="${i}">In the journal ↓</a></div>`;
     card.hidden = false; card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
     if (world) {
-      SEL.p = p; world.pointsData(places).ringsData(places).labelsData([p]);
-      world.pointOfView({ lat: p.lat - 1.2, lng: p.lng, altitude: 0.45 }, 1600);
+      SEL.p = p; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([...places]);
+      world.pointOfView({ lat: p.lat - 1.2, lng: p.lng, altitude: 0.6 }, 1600);
       world.controls().autoRotate = false;
     }
   }
   $('place-card').addEventListener('click', (e) => {
-    if (e.target.closest('.pclose')) { $('place-card').hidden = true; if (world) { SEL.p = null; world.pointsData(places).ringsData(places).labelsData([]); } world?.pointOfView({ altitude: 1.7 }, 1200); window.__resumeGlobe?.(1500); $('place-chips').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false')); return; }
+    if (e.target.closest('.pclose')) { $('place-card').hidden = true; if (world) { SEL.p = null; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([...places]); } world?.pointOfView({ altitude: 1.7 }, 1200); window.__resumeGlobe?.(1500); $('place-chips').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false')); return; }
     const o = e.target.closest('[data-open]');
     if (o) { cur = +o.dataset.open; idx = +o.dataset.idx; show(); lb.showModal(); return; }
     const j = e.target.closest('[data-jump]');
@@ -338,23 +346,43 @@
       world = Globe()(el)
         .width(el.clientWidth).height(el.clientHeight)
         .backgroundColor('rgba(0,0,0,0)')
-        .globeImageUrl('assets/globe/earth-night.jpg')
+        .globeImageUrl(innerWidth > 760 ? 'assets/globe/earth-night-8k.jpg' : 'assets/globe/earth-night.jpg') // 8K on larger screens
         .bumpImageUrl('assets/globe/earth-topology.png')
         .showAtmosphere(false)
         .pointsData(places).pointLat('lat').pointLng('lng').pointsMerge(false).pointResolution(24)
-        .pointColor((p) => KCOL[KIND(p)]).pointAltitude(0.006).pointRadius((p) => (p === SEL.p ? 0.55 : 0.38))
+        .pointColor((p) => KCOL[KIND(p)]).pointAltitude(0.006).pointRadius((p) => (p === SEL.p ? 1.35 : 1) * SEL.r)
         .pointLabel((p) => `<div style="font:500 12px Hanken Grotesk,sans-serif;background:#141f1bee;border:1px solid #26352f;color:#ebe5d5;padding:5px 9px;border-radius:8px">${esc(p.name)}</div>`)
         .onPointClick((p) => select(places.indexOf(p)))
         .onPointHover((p) => { el.style.cursor = p ? 'pointer' : 'grab'; })
         .ringsData(places).ringLat('lat').ringLng('lng').ringAltitude(0.004)
         .ringColor((p) => { const c = KCOL[KIND(p)]; return (t) => c + Math.round((1 - t) * 200).toString(16).padStart(2, '0'); })
-        .ringMaxRadius((p) => (p === SEL.p ? 2.8 : 1.1)).ringPropagationSpeed(0.9).ringRepeatPeriod((p) => (p === SEL.p ? 700 : 1800))
-        .labelsData([]).labelLat((p) => p.lat + 0.55).labelLng('lng').labelText('name').labelSize(0.45).labelDotRadius(0).labelAltitude(0.008)
-        .labelColor(() => '#ebe5d5').labelResolution(3).labelIncludeDot(false)
+        .ringMaxRadius((p) => SEL.r * (p === SEL.p ? 7 : 3)).ringPropagationSpeed(0.9).ringRepeatPeriod((p) => (p === SEL.p ? 700 : 1800))
         .arcsData(arcs).arcColor(() => ['rgba(255,123,58,0.15)', 'rgba(255,123,58,0.9)'])
         .arcStroke(0.45).arcAltitudeAutoScale(0.35).arcDashLength(0.45).arcDashGap(0.25).arcDashAnimateTime(2600)
         .pointOfView({ lat: 30, lng: -40, altitude: 2.6 });
-      window.__globe = world; // handy for debugging in the console
+      window.__globe = world;
+
+  // selected place label: positioned each frame from the globe's projection, so it stays attached and uses the site font
+  const glabel = document.createElement('div'); glabel.className = 'glabel'; glabel.innerHTML = '<span></span>'; glabel.hidden = true;
+  world.renderer().domElement.parentElement.appendChild(glabel);
+  const rad = Math.PI / 180;
+  (function follow() {
+    // keep pins a neat size at any zoom (also during fly-ins, which don't fire zoom events)
+    const r = Math.max(0.06, Math.min(0.36, 0.32 * world.pointOfView().altitude));
+    if (Math.abs(r - SEL.r) / SEL.r > 0.08) { SEL.r = r; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([...world.ringsData()]); }
+    const p = SEL.p;
+    if (p) {
+      const v = world.pointOfView();   // hide when the place is on the far side of the globe
+      const cos = Math.sin(v.lat * rad) * Math.sin(p.lat * rad) + Math.cos(v.lat * rad) * Math.cos(p.lat * rad) * Math.cos((v.lng - p.lng) * rad);
+      const { x, y } = world.getScreenCoords(p.lat, p.lng, 0.01);
+      glabel.hidden = cos < 0.15;
+      glabel.style.transform = `translate(${x}px, ${y}px)`;
+      if (glabel.firstChild.textContent !== p.name) glabel.firstChild.textContent = p.name;
+    } else glabel.hidden = true;
+    requestAnimationFrame(follow);
+  })();
+  const sharpen = () => { const m = world.globeMaterial().map; if (!m) return setTimeout(sharpen, 250); m.anisotropy = world.renderer().capabilities.getMaxAnisotropy(); m.needsUpdate = true; };
+  sharpen(); // handy for debugging in the console
       const c = world.controls();
       c.enableZoom = false; c.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches; c.autoRotateSpeed = 0.35;
       let rt;

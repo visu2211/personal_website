@@ -56,6 +56,14 @@
   .card .close:hover { color: var(--ember); border-color: var(--ember); }
   .card .foot { margin-top: 14px; display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
   .card .foot a { color: var(--ember); text-decoration: none; font-weight: 500; }
+  /* selected place label: a page element in the site font, pinned to the globe (no transform transitions, so it never drifts) */
+  .glabel { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; will-change: transform; }
+  .glabel span { display: block; transform: translate(-50%, calc(-100% - 12px)); white-space: nowrap; font: 600 13px var(--f-body); letter-spacing: .01em; color: var(--bone);
+    background: #0d1512e6; border: 1px solid var(--moss); border-radius: 999px; padding: 4px 10px; box-shadow: 0 6px 16px -8px #000; animation: glIn .35s ease-out; }
+  @keyframes glIn { from { opacity: 0; } }
+  .credit { right: var(--gutter); bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); font: 10.5px var(--f-mono); color: #6b7078; }
+  .credit a { color: inherit; }
+  @media (max-width: 760px) { .credit { display: none; } }
   .loading { inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--lichen); z-index: 2; }
   dialog.lightbox { border: 0; padding: 0; background: transparent; max-width: min(92vw, 1200px); max-height: 94vh; }
   dialog.lightbox::backdrop { background: #050807eb; backdrop-filter: blur(4px); }
@@ -91,6 +99,7 @@
 </div>
 <aside class="ui card" id="card" hidden aria-live="polite"></aside>
 <nav class="ui chips" id="chips" aria-label="Places"></nav>
+<div class="ui credit">Earth at night: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>, CC BY 4.0</div>
 
 <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
   <img id="lb-img" alt="">
@@ -122,30 +131,50 @@
 
   /* ---------- globe ---------- */
   const el = $('globe');
-  const SEL = { p: null };
+  const SEL = { p: null, r: 0.36 };
   const world = Globe()(el)
     .backgroundColor('rgba(0,0,0,0)')
-    .globeImageUrl('assets/globe/earth-night.jpg')
+    .globeImageUrl(innerWidth > 760 ? 'assets/globe/earth-night-8k.jpg' : 'assets/globe/earth-night.jpg') // 8K on larger screens
     .bumpImageUrl('assets/globe/earth-topology.png')
     .showAtmosphere(false)
     .pointsData(places).pointLat('lat').pointLng('lng').pointsMerge(false).pointResolution(24)
-    .pointColor((p) => KCOL[KIND(p)]).pointAltitude(0.008).pointRadius((p) => (p === SEL.p ? 0.5 : 0.36))
+    .pointColor((p) => KCOL[KIND(p)]).pointAltitude(0.008).pointRadius((p) => (p === SEL.p ? 1.35 : 1) * SEL.r)
     .pointLabel((p) => `<div style="font:500 12px Hanken Grotesk,sans-serif;background:#141f1bee;border:1px solid #26352f;color:#ebe5d5;padding:5px 9px;border-radius:8px">${esc(p.name)}</div>`)
     .onPointClick((p) => select(places.indexOf(p)))
     .onPointHover((p) => { el.style.cursor = p ? 'pointer' : 'grab'; })
     .ringsData([]).ringLat('lat').ringLng('lng').ringAltitude(0.004)
     .ringColor(() => (t) => `rgba(235,235,240,${0.8 * (1 - t)})`)
-    .ringMaxRadius(1.8).ringPropagationSpeed(0.8).ringRepeatPeriod(1100)
-    .labelsData([]).labelLat((p) => p.lat + 0.55).labelLng('lng').labelText('name').labelSize(0.45).labelDotRadius(0).labelAltitude(0.008)
-    .labelColor(() => '#ebe5d5').labelResolution(3).labelIncludeDot(false);
+    .ringMaxRadius(() => SEL.r * 5).ringPropagationSpeed(0.8).ringRepeatPeriod(1100)
   // brighter, blue-tinted night globe with soft shading
   const mat = world.globeMaterial();
   mat.color.set('#bcd4ff'); mat.emissive.set('#0a1a36'); mat.emissiveIntensity = 0.55; mat.shininess = 6;
   window.__globe = world;
 
+  // selected place label: positioned each frame from the globe's projection, so it stays attached and uses the site font
+  const glabel = document.createElement('div'); glabel.className = 'glabel'; glabel.innerHTML = '<span></span>'; glabel.hidden = true;
+  world.renderer().domElement.parentElement.appendChild(glabel);
+  const rad = Math.PI / 180;
+  (function follow() {
+    // keep pins a neat size at any zoom (also during fly-ins, which don't fire zoom events)
+    const r = Math.max(0.06, Math.min(0.36, 0.32 * world.pointOfView().altitude));
+    if (Math.abs(r - SEL.r) / SEL.r > 0.08) { SEL.r = r; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([...world.ringsData()]); }
+    const p = SEL.p;
+    if (p) {
+      const v = world.pointOfView();   // hide when the place is on the far side of the globe
+      const cos = Math.sin(v.lat * rad) * Math.sin(p.lat * rad) + Math.cos(v.lat * rad) * Math.cos(p.lat * rad) * Math.cos((v.lng - p.lng) * rad);
+      const { x, y } = world.getScreenCoords(p.lat, p.lng, 0.01);
+      glabel.hidden = cos < 0.15;
+      glabel.style.transform = `translate(${x}px, ${y}px)`;
+      if (glabel.firstChild.textContent !== p.name) glabel.firstChild.textContent = p.name;
+    } else glabel.hidden = true;
+    requestAnimationFrame(follow);
+  })();
+  const sharpen = () => { const m = world.globeMaterial().map; if (!m) return setTimeout(sharpen, 250); m.anisotropy = world.renderer().capabilities.getMaxAnisotropy(); m.needsUpdate = true; };
+  sharpen();
+
   const c = world.controls();
   c.autoRotate = !reduce; c.autoRotateSpeed = 0.45; c.enableDamping = true; c.dampingFactor = 0.08;
-  c.minDistance = 130; c.maxDistance = 520;
+  c.minDistance = 142; c.maxDistance = 520; // stop zooming before the night-lights image gets blurry
   const start = places.find((p) => KIND(p) === 'home') || places[0] || { lat: 20, lng: -40 };
   world.pointOfView({ lat: 28, lng: start.lng - 40, altitude: 2.8 });
   setTimeout(() => world.pointOfView({ lat: start.lat - 2, lng: start.lng + 14, altitude: 2.25 }, 2600), 300);
@@ -178,11 +207,11 @@
       <div class="strip">${strip}</div>
       <div class="foot"><span class="mono" style="color:var(--lichen);font-size:12px">${n ? n + ' photo' + (n > 1 ? 's' : '') : ''}</span><a href="scrapbook.html#journal">Open the journal →</a></div>`;
     $('card').hidden = false;
-    SEL.p = p; world.pointsData(places).ringsData([p]).labelsData([p]);
+    SEL.p = p; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([p]);
     world.pointOfView({ lat: p.lat - (innerWidth < 760 ? 3 : 0.6), lng: p.lng + (innerWidth < 760 ? 0 : 3), altitude: 0.5 }, 1800);
   }
   function deselect() {
-    $('card').hidden = true; SEL.p = null; world.pointsData(places).ringsData([]).labelsData([]);
+    $('card').hidden = true; SEL.p = null; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([]);
     $('chips').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
     world.pointOfView({ altitude: 2.25 }, 1400);
     resumeLater(1500);
