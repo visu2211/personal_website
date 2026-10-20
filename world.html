@@ -147,7 +147,7 @@
     .ringMaxRadius(() => SEL.r * 5).ringPropagationSpeed(0.8).ringRepeatPeriod(1100)
   // brighter, blue-tinted night globe with soft shading
   const mat = world.globeMaterial();
-  mat.color.set('#bcd4ff'); mat.emissive.set('#0a1a36'); mat.emissiveIntensity = 0.55; mat.shininess = 6;
+  mat.color.set('#6f84a6'); mat.emissive.set('#0a1a36'); mat.emissiveIntensity = 0.5; mat.shininess = 4; // dimmed so the lights stay in the background
   window.__globe = world;
 
   // selected place label: positioned each frame from the globe's projection, so it stays attached and uses the site font
