@@ -146,8 +146,8 @@
   .ball-stage { height: 150px; }
   .bike-reset.mini { right: -4px; bottom: -4px; padding: 6px; }
   .pad-stage { height: clamp(220px, 24vw, 280px); }
-  .model-credit { position: absolute; left: 0; bottom: 6px; font: 10px var(--f-mono); color: var(--lichen); opacity: .65; text-decoration: none; max-width: 60%; }
-  .model-credit:hover { opacity: 1; color: var(--ember); }
+  footer .credits { opacity: .7; }
+  footer .credits a { color: inherit; }
   .psn { grid-column: 1 / -1; }
   .psn-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; align-items: center; }
   .psn-text h3 { margin-top: 0; }
@@ -355,7 +355,7 @@
               <span class="live" id="psn-status"><i></i>Connecting</span>
             </div>
           </div>
-          <div class="pad-stage model-stage"><canvas data-model="controller" aria-label="3D PS5 DualSense controller. Drag to rotate it in any direction." role="img"></canvas><span class="bike-loading">Charging the controller…</span><a class="model-credit" href="https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936" target="_blank" rel="noopener">3D model: “Playstation 5 Dualsense” by AHarmlessPotato, CC BY 4.0</a><button class="bike-reset" type="button" data-reset hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset view</button></div>
+          <div class="pad-stage model-stage"><canvas data-model="controller" aria-label="3D PS5 DualSense controller. Drag to rotate it in any direction." role="img"></canvas><span class="bike-loading">Charging the controller…</span><button class="bike-reset" type="button" data-reset hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset view</button></div>
         </div>
         <div class="shelf" id="psn-shelf">
           <div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div>
@@ -370,7 +370,7 @@
   </section>
 </main>
 
-<footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span><a href="scrapbook.html" style="color:inherit">Next: the scrapbook →</a></span></div></footer>
+<footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span class="credits">Controller model: <a href="https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936" target="_blank" rel="noopener">“Playstation 5 Dualsense”</a> by AHarmlessPotato, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span><span><a href="scrapbook.html" style="color:inherit">Next: the scrapbook →</a></span></div></footer>
 
 <script src="assets/site.js"></script>
 <script src="assets/chess.js"></script>
