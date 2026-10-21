@@ -345,6 +345,9 @@ async function loadDualSense() {
       if (!o.isMesh || !o.material) return;
       o.material.color?.set('#a3173c');
       o.material.envMapIntensity = 0.55;
+      // the file marks two materials as see-through (alpha blend), which leaves holes at some angles; it's all solid plastic
+      o.material.transparent = false; o.material.opacity = 1; o.material.alphaTest = 0; o.material.depthWrite = true;
+      o.material.side = THREE.DoubleSide; o.material.needsUpdate = true;
     });
     // the file stands upright facing away; turn it to face the camera
     root.rotation.set(0, Math.PI, 0);
