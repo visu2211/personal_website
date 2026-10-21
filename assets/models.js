@@ -36,7 +36,9 @@ export function mountModel(canvas, name, opts = {}) {
   const pivot = new THREE.Group(); pivot.add(obj); scene.add(pivot);
 
   const ground = new THREE.Mesh(new THREE.CircleGeometry(spec.fit * 0.95, 48), new THREE.ShadowMaterial({ opacity: 0.32 }));
-  ground.rotation.x = -Math.PI / 2; ground.position.y = -(size.y * k) / 2 - spec.fit * 0.12; ground.receiveShadow = true; scene.add(ground);
+  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  // below the object's reach in any orientation, so spinning never passes through the shadow plane
+  ground.position.y = -(size.length() * k) / 2 - 0.04;
 
   const home = new THREE.Quaternion().setFromEuler(new THREE.Euler(...spec.home));
   pivot.quaternion.copy(home);
@@ -174,29 +176,42 @@ function buildBolt() {
 // Built lying flat: x = left/right, y = up (face side), z = toward you (grips point +z)
 function buildController() {
   const M = {
-    white: new THREE.MeshPhysicalMaterial({ color: '#eceef1', roughness: 0.42, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.5 }),
-    black: std('#16171a', 0.5, 0.1), gloss: std('#0e0f11', 0.2, 0.2), stick: std('#1d1e21', 0.75, 0.05),
-    button: new THREE.MeshPhysicalMaterial({ color: '#3b3f46', roughness: 0.15, metalness: 0, transmission: 0.25, thickness: 0.05 }),
-    glyph: std('#9aa0a8', 0.4, 0.1), light: std('#3d7bff', 0.3, 0, { emissive: '#3d7bff', emissiveIntensity: 1.6 }),
+    // Cosmic Red DualSense: red shell and touchpad, black core, red translucent buttons with pink glyphs
+    white: std('#6a0c24', 0.82, 0),
+    black: std('#141518', 0.55, 0.1), gloss: std('#0c0d0f', 0.22, 0.2), stick: std('#1c1d20', 0.8, 0.05),
+    button: new THREE.MeshPhysicalMaterial({ color: '#7d0e2b', roughness: 0.2, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.2 }),
+    glyph: std('#ff9db4', 0.4, 0), light: std('#4a6bff', 0.3, 0, { emissive: '#3f5cff', emissiveIntensity: 1.8 }),
+    mute: std('#c9ccd1', 0.35, 0.3),
   };
   const pad = new THREE.Group(); const { add } = kit(pad);
 
-  // outline seen from above, in shape coords (x right, y toward the triggers)
+  // main body seen from above (shape coords: x right, y toward the triggers); grips are added separately below
   const body = new THREE.Shape();
   body.moveTo(-0.9, 0.52);
   body.bezierCurveTo(-0.4, 0.62, 0.4, 0.62, 0.9, 0.52);                 // top edge
-  body.bezierCurveTo(1.12, 0.48, 1.2, 0.2, 1.17, -0.05);                // right shoulder
-  body.bezierCurveTo(1.14, -0.4, 1.08, -0.72, 0.92, -0.86);             // right grip, outside
-  body.bezierCurveTo(0.8, -0.96, 0.62, -0.94, 0.55, -0.82);             // right grip end
-  body.bezierCurveTo(0.45, -0.6, 0.38, -0.36, 0.22, -0.3);              // right grip, inside
-  body.bezierCurveTo(0.08, -0.26, -0.08, -0.26, -0.22, -0.3);           // bottom middle
-  body.bezierCurveTo(-0.38, -0.36, -0.45, -0.6, -0.55, -0.82);
-  body.bezierCurveTo(-0.62, -0.94, -0.8, -0.96, -0.92, -0.86);
-  body.bezierCurveTo(-1.08, -0.72, -1.14, -0.4, -1.17, -0.05);
+  body.bezierCurveTo(1.12, 0.48, 1.2, 0.2, 1.15, -0.1);                 // right shoulder
+  body.bezierCurveTo(1.1, -0.34, 0.86, -0.42, 0.6, -0.4);               // into the right grip
+  body.bezierCurveTo(0.36, -0.38, 0.2, -0.3, 0, -0.3);                  // bottom middle
+  body.bezierCurveTo(-0.2, -0.3, -0.36, -0.38, -0.6, -0.4);
+  body.bezierCurveTo(-0.86, -0.42, -1.1, -0.34, -1.15, -0.1);
   body.bezierCurveTo(-1.2, 0.2, -1.12, 0.48, -0.9, 0.52);
-  const shell = new THREE.ExtrudeGeometry(body, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.09, bevelSize: 0.08, bevelSegments: 6, curveSegments: 40 });
+  // thick, heavily rounded shell (top face stays at y ≈ 0.29 where the buttons sit)
+  const shell = new THREE.ExtrudeGeometry(body, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.14, bevelSize: 0.12, bevelSegments: 10, curveSegments: 48 });
   shell.rotateX(-Math.PI / 2);                                           // lie flat: shape y → -z, extrusion → +y
-  add(shell, M.white);
+  add(shell, M.white, [0, -0.05, 0], [0, 0, 0], [1, 0.82, 1]);
+
+  // grips: rounded handles that sweep toward you, down, and out, like a DualSense
+  for (const side of [-1, 1]) {
+    const grip = new THREE.Group();
+    const g = new THREE.Mesh(new THREE.CapsuleGeometry(0.21, 0.46, 10, 28), M.white);
+    g.scale.set(1, 1, 0.82);
+    grip.add(g);
+    const tip = new THREE.Mesh(new THREE.CapsuleGeometry(0.135, 0.32, 8, 24), M.black);  // dark inner face of each grip
+    tip.position.set(-side * 0.1, -0.05, 0.02); tip.scale.set(0.7, 1, 0.75); grip.add(tip);
+    grip.position.set(side * 0.72, 0.02, 0.38);
+    grip.rotation.set(Math.PI / 2 - 0.32, 0, side * 0.36);              // toward +z, tipped down, splayed out
+    pad.add(grip);
+  }
 
   // black center deck between the grips (where the sticks and buttons sit)
   const deck = new THREE.Shape();
@@ -211,18 +226,19 @@ function buildController() {
   add(dg, M.black, [0, 0.285, 0]);
 
   // touchpad (white, slightly raised) with the light bar strips on either side
-  add(new THREE.BoxGeometry(0.72, 0.03, 0.42, 1, 1, 1), M.white, [0, 0.33, -0.36]);
+  add(new THREE.SphereGeometry(0.5, 40, 16, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [0, 0.3, -0.36], [0, 0, 0], [0.74, 0.07, 0.44]);  // domed touchpad
   for (const x of [-0.39, 0.39]) add(new THREE.BoxGeometry(0.02, 0.012, 0.36), M.light, [x, 0.33, -0.36]);
 
   // analog sticks with domed, textured caps
   for (const x of [-0.3, 0.3]) {
-    add(new THREE.CylinderGeometry(0.1, 0.12, 0.07, 32), M.black, [x, 0.33, 0.04]);
-    add(new THREE.CylinderGeometry(0.12, 0.12, 0.03, 32), M.stick, [x, 0.39, 0.04]);
-    add(new THREE.TorusGeometry(0.105, 0.016, 10, 40), M.stick, [x, 0.41, 0.04], [Math.PI / 2, 0, 0]);
+    add(new THREE.CylinderGeometry(0.075, 0.12, 0.12, 32), M.black, [x, 0.35, 0.04]);              // stick shaft and well
+    add(new THREE.CylinderGeometry(0.13, 0.13, 0.04, 36), M.stick, [x, 0.43, 0.04]);
+    add(new THREE.TorusGeometry(0.115, 0.02, 12, 44), M.stick, [x, 0.455, 0.04], [Math.PI / 2, 0, 0]);  // raised rim of the cap
   }
   // D-pad (left)
   for (const [dx, dz] of [[0, -0.09], [0, 0.09], [-0.09, 0], [0.09, 0]]) {
-    add(new THREE.BoxGeometry(dz ? 0.07 : 0.085, 0.03, dz ? 0.085 : 0.07), M.gloss, [-0.68 + dx, 0.315, -0.2 + dz]);
+    add(new THREE.BoxGeometry(dz ? 0.07 : 0.085, 0.03, dz ? 0.085 : 0.07), M.button, [-0.68 + dx, 0.315, -0.2 + dz]);
+    add(new THREE.CylinderGeometry(0.014, 0.014, 0.004, 3), M.glyph, [-0.68 + dx * 1.15, 0.333, -0.2 + dz * 1.15], [0, Math.atan2(dx, dz) + Math.PI, 0]);  // little arrow
   }
   // face buttons (right): triangle, circle, cross, square with small glyphs
   const fb = [[0, -0.11, 'tri'], [0.11, 0, 'circle'], [0, 0.11, 'cross'], [-0.11, 0, 'square']];
@@ -236,57 +252,75 @@ function buildController() {
     if (g === 'tri') add(new THREE.CylinderGeometry(0.026, 0.026, 0.004, 3), M.glyph, [x, gy, z], [0, Math.PI, 0]);
   }
   // PS button, mute button, create/options
-  add(new THREE.CylinderGeometry(0.04, 0.04, 0.025, 24), M.gloss, [0, 0.31, 0.1]);
-  add(new THREE.BoxGeometry(0.07, 0.015, 0.025), M.light, [0, 0.305, 0.2]);
-  for (const x of [-0.45, 0.45]) add(new THREE.BoxGeometry(0.03, 0.02, 0.06), M.gloss, [x, 0.33, -0.48], [0, x > 0 ? -0.35 : 0.35, 0]);
+  add(new THREE.CylinderGeometry(0.04, 0.04, 0.025, 24), M.gloss, [0, 0.31, 0.06]);                       // PS button
+  add(new THREE.BoxGeometry(0.075, 0.012, 0.022), M.mute, [0, 0.302, 0.16]);                               // mute button
+  for (let r = 0; r < 2; r++) for (let i = -3; i <= 3; i++) add(new THREE.CylinderGeometry(0.008, 0.008, 0.01, 8), M.gloss, [i * 0.028, 0.303, -0.1 + r * 0.03]);  // speaker grille
+  for (const x of [-0.45, 0.45]) add(new THREE.BoxGeometry(0.03, 0.02, 0.07), M.button, [x, 0.33, -0.48], [0, x > 0 ? -0.35 : 0.35, 0]); // create / options
 
   // shoulder buttons and triggers along the top edge
   for (const x of [-0.72, 0.72]) {
     add(new THREE.BoxGeometry(0.34, 0.06, 0.1), M.black, [x, 0.22, -0.6], [0, x > 0 ? -0.12 : 0.12, 0]);        // L1 / R1
-    add(new THREE.BoxGeometry(0.3, 0.16, 0.14), M.black, [x, 0.06, -0.58], [0.5, x > 0 ? -0.12 : 0.12, 0]);     // L2 / R2
+    add(new THREE.CapsuleGeometry(0.07, 0.2, 6, 16), M.white, [x * 1.02, 0.02, -0.62], [0.6, 0, Math.PI / 2 + (x > 0 ? -0.12 : 0.12)], [1, 1, 1.4]);  // L2 / R2 triggers
   }
   // underside: dark grip texture strip and speaker grille dots
   add(new THREE.BoxGeometry(1.4, 0.01, 0.06), M.black, [0, -0.095, -0.1]);
-  for (let i = -3; i <= 3; i++) add(new THREE.CylinderGeometry(0.008, 0.008, 0.01, 8), M.gloss, [i * 0.03, 0.3, 0.27]);
+  // matte plastics: keep studio reflections low so the red stays deep and the black stays black
+  for (const [k, m] of Object.entries(M)) if (k !== 'light') m.envMapIntensity = k === 'button' ? 0.5 : 0.22;
+  M.black.roughness = 0.8; M.stick.roughness = 0.9;
   return pad;
 }
 
-/* ======================= Volleyball ======================= */
-// 18 panels: each face of a cube mapped onto a sphere, split into 3 strips; strips on neighboring faces run crosswise.
+/* ======================= Volleyball (Molten FLISTATEC style) ======================= */
+// Red, white and blue panels that swirl around the ball, dark seams between them, and a honeycomb
+// surface texture. Painted into an equirectangular canvas and wrapped on a sphere.
 function buildVolleyball() {
-  const N = 30;                                  // quads per face edge
-  const colors = { blue: new THREE.Color('#1f4fb8'), yellow: new THREE.Color('#ffc928'), white: new THREE.Color('#f4f1ea'), seam: new THREE.Color('#2b2b2b') };
-  const pal = [[colors.yellow, colors.blue, colors.yellow], [colors.blue, colors.yellow, colors.blue], [colors.white, colors.blue, colors.white]];
-  const pos = [], col = [];
-  const faces = [ // [axis normal, u axis, v axis]
-    [[1, 0, 0], [0, 0, -1], [0, 1, 0]], [[-1, 0, 0], [0, 0, 1], [0, 1, 0]],
-    [[0, 1, 0], [1, 0, 0], [0, 0, -1]], [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
-    [[0, 0, 1], [1, 0, 0], [0, 1, 0]], [[0, 0, -1], [-1, 0, 0], [0, 1, 0]],
-  ];
-  const P = (n, u, v, a, b) => { const x = n[0] + u[0] * a + v[0] * b, y = n[1] + u[1] * a + v[1] * b, z = n[2] + u[2] * a + v[2] * b; const l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; };
-  faces.forEach(([n, u, v], fi) => {
-    const pair = fi >> 1, stripAlongU = pair % 2 === 0;
-    for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
-      const a0 = -1 + (2 * i) / N, a1 = -1 + (2 * (i + 1)) / N, b0 = -1 + (2 * j) / N, b1 = -1 + (2 * (j + 1)) / N;
-      const t = ((stripAlongU ? (i + 0.5) : (j + 0.5)) / N);   // 0..1 across the face
-      const strip = Math.min(2, Math.floor(t * 3));
-      const edge = Math.abs(t * 3 - Math.round(t * 3)) < 0.06 || i === 0 || j === 0 || i === N - 1 || j === N - 1;
-      const c = edge ? colors.seam : pal[pair][strip];
-      const q = [P(n, u, v, a0, b0), P(n, u, v, a1, b0), P(n, u, v, a1, b1), P(n, u, v, a0, b1)];
-      for (const k of [0, 1, 2, 0, 2, 3]) { pos.push(...q[k]); col.push(c.r, c.g, c.b); }
+  const W = 2048, H = 1024;
+  const color = document.createElement('canvas'); color.width = W; color.height = H;
+  const bump = document.createElement('canvas'); bump.width = W; bump.height = H;
+  const cx = color.getContext('2d'), bx = bump.getContext('2d');
+  const img = cx.createImageData(W, H), d = img.data;
+  // one lap around the ball: white, red, white, blue, twice (widths in fractions of a lap)
+  const bands = [['#f3f2ee', 0.16], ['#d32638', 0.07], ['#1f3c9e', 0.06], ['#f3f2ee', 0.13], ['#1f3c9e', 0.06], ['#d32638', 0.07]];
+  const rgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+  const stops = []; let acc = 0; for (const [c, w] of bands) { stops.push([acc, rgb(c)]); acc += w; }
+  const lap = acc;
+  for (let y = 0; y < H; y++) {
+    const lat = (0.5 - y / H) * Math.PI;                       // +π/2 top … −π/2 bottom
+    // swirl: the bands twist with latitude, an S-curve like the Molten panels
+    const twist = 2.4 * Math.sin(lat * 2.1) + 0.5 * lat;
+    for (let x = 0; x < W; x++) {
+      const lon = (x / W) * Math.PI * 2;
+      let t = (((lon + twist) / (Math.PI * 2)) % 1 + 1) % 1 * lap;
+      let k = 0; while (k + 1 < stops.length && stops[k + 1][0] <= t) k++;
+      const next = k + 1 < stops.length ? stops[k + 1][0] : lap;
+      const edge = Math.min(t - stops[k][0], next - t) * (Math.PI * 2 / lap) * Math.cos(lat);   // distance to a seam
+      let [r, g, b] = stops[k][1];
+      if (edge < 0.006) { r = g = b = 40; }                   // seam
+      const i = (y * W + x) * 4; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255;
     }
-  });
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-  g.setAttribute('normal', new THREE.Float32BufferAttribute(pos.slice(), 3));   // unit sphere: normal = position
+  }
+  cx.putImageData(img, 0, 0);
+  // honeycomb bump: thin raised hex lines (stretched toward the poles, which the eye barely sees on a spinning ball)
+  bx.fillStyle = '#808080'; bx.fillRect(0, 0, W, H);
+  bx.strokeStyle = '#5a5a5a'; bx.lineWidth = 2;
+  const R = 9, hw = Math.sqrt(3) * R;
+  for (let row = 0, y = 0; y < H + R; row++, y += R * 1.5) {
+    for (let x = (row % 2) * hw / 2; x < W + hw; x += hw) {
+      bx.beginPath();
+      for (let k = 0; k < 6; k++) { const a = Math.PI / 6 + (k * Math.PI) / 3; bx.lineTo(x + R * Math.cos(a), y + R * Math.sin(a)); }
+      bx.closePath(); bx.stroke();
+    }
+  }
+  const map = new THREE.CanvasTexture(color); map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 8;
+  const bumpMap = new THREE.CanvasTexture(bump);
   const ball = new THREE.Group();
-  ball.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55, metalness: 0 })));
+  ball.add(new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64),
+    new THREE.MeshPhysicalMaterial({ map, bumpMap, bumpScale: 0.6, roughness: 0.6, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.6 })));
   return ball;
 }
 
 const BUILDERS = {
   bolt: { build: buildBolt, view: { fit: 2.4, dist: 5.6, home: [0, -0.6, 0], spin: 0.004 } },
-  controller: { build: buildController, view: { fit: 2.3, dist: 5.4, home: [0.85, -0.25, 0], spin: 0.005 } },
+  controller: { build: buildController, view: { fit: 2.3, dist: 5.2, home: [1.42, 0, 0], spin: 0.0025 } },
   volleyball: { build: buildVolleyball, view: { fit: 2.0, dist: 5.2, home: [0.4, 0.6, 0.2], spin: 0.008 } },
 };

@@ -214,6 +214,18 @@
     });
   }
 
+  /* ---------- no lone last words: join each paragraph's last two words (backs up CSS text-wrap: pretty) ---------- */
+  const noWidow = (root = document) => root.querySelectorAll('main p, main li, main dd, main .tagline, .sec-intro').forEach((el) => {
+    if (el.dataset.nw || el.textContent.trim().length < 40) return;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let last = null;
+    while (walker.nextNode()) if (walker.currentNode.nodeValue.trim()) last = walker.currentNode;
+    if (!last) return;
+    const v = last.nodeValue.replace(/\s+$/, ''), i = v.lastIndexOf(' ');
+    if (i > 0 && v.length - i < 14) { last.nodeValue = v.slice(0, i) + '\u00A0' + v.slice(i + 1) + last.nodeValue.slice(v.length); el.dataset.nw = '1'; }
+  });
+  noWidow();
+  window.noWidow = noWidow; // pages that render text later (live stats, cards) call this after rendering
+
   /* ---------- spotlight on cards ---------- */
   document.querySelectorAll('.proj').forEach((c) => c.addEventListener('pointermove', (e) => {
     const r = c.getBoundingClientRect();
