@@ -160,8 +160,9 @@
   .cover .art { aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--night); border: 1px solid var(--moss); transition: transform .3s, border-color .3s; }
   .cover:hover .art { transform: translateY(-4px); border-color: var(--ember); }
   .cover img { width: 100%; height: 100%; object-fit: cover; }
-  .cover b { font-size: 14px; font-weight: 600; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .cover small { font-family: var(--f-mono); font-size: 11px; color: var(--lichen); }
+  .cover b { font-size: 14px; font-weight: 600; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-wrap: balance; }
+  .cover small { display: grid; gap: 2px; font-family: var(--f-mono); font-size: 11px; color: var(--lichen); }
+  .cover small span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cover.skeleton { aspect-ratio: 1; border-radius: 10px; background: linear-gradient(90deg, var(--night) 0%, #1a2420 50%, var(--night) 100%) 0 0 / 200% 100%; animation: shimmer 1.4s linear infinite; }
   @keyframes shimmer { to { background-position: -200% 0; } }
   .psn-foot { margin-top: 14px; font-size: 13px; color: var(--lichen); }
@@ -477,6 +478,9 @@
   })();
 
 
+  // join a title's last two words when the last one is short, so "Spider-Man 2" or "Ops III" wrap together
+  const keepTogether = (t) => t.replace(/ (\S{1,4})$/, '\u00A0$1');
+
   /* ---------- PS5 activity (served by /api/psn on Vercel) ---------- */
   (async () => {
     const shelf = $('psn-shelf'), status = $('psn-status'), card = $('games');
@@ -490,7 +494,7 @@
       $('psn-id').insertAdjacentHTML('afterbegin', `${p.avatar ? `<img src="${esc(p.avatar)}" alt="" width="40" height="40">` : ''}<div><b>${esc(p.onlineId || 'PlayStation')}</b>${p.trophyLevel ? `<span class="trophy">Trophy level <b>${esc(p.trophyLevel)}</b>${p.trophies ? ` · ${p.trophies.platinum} plat · ${p.trophies.gold} gold` : ''}</span>` : ''}</div>`);
       shelf.innerHTML = p.games.length ? p.games.slice(0, 8).map((g) => `
         <div class="cover"><div class="art"><img src="${esc(g.image)}" alt="" loading="lazy"></div>
-          <b>${esc(g.name)}</b><small>${g.platform}${g.hours ? ' · ' + g.hours + ' hrs' : ''} · ${days(g.lastPlayed)}</small></div>`).join('')
+          <b>${keepTogether(esc(g.name))}</b><small><span>${g.platform}${g.hours ? ' · ' + g.hours + ' hrs' : ''}</span><span>${days(g.lastPlayed)}</span></small></div>`).join('')
         : '<p style="color:var(--lichen)">No recent games to show.</p>';
       $('psn-foot').textContent = 'Live from PlayStation Network · refreshes every 15 minutes';
     } catch {
