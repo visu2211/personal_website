@@ -188,9 +188,11 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const places = [...(window.PLACES || [])].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  // home first, then dated places in order, then undated places in the order they're listed
+  const rank = (p) => (p.kind === 'home' ? '0' : p.date ? '1' + p.date : '2');
+  const places = [...(window.PLACES || [])].sort((a, b) => rank(a).localeCompare(rank(b)));
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const when = (d) => d ? `${MONTHS[+d.slice(5, 7) - 1] || ''} ${d.slice(0, 4)}`.trim() : 'Home';
+  const when = (d) => (d ? `${MONTHS[+d.slice(5, 7) - 1] || ''} ${d.slice(0, 4)}`.trim() : '');
   const deg = (v, pos, neg) => `${Math.abs(v).toFixed(2)}° ${v >= 0 ? pos : neg}`;
 
   $('n-places').textContent = places.length;
@@ -266,7 +268,7 @@
         : `<div class="shot empty"><span>Photo coming soon</span></div>`;
       return `<article class="polaroid" data-i="${i}" style="--tilt:${tilts[i % tilts.length]}deg;--tape:${(i % 2 ? 4 : -3)}deg">
         ${shot}
-        <span class="stamp">${esc(when(p.date))}</span>
+        ${p.date || p.kind === 'home' ? `<span class="stamp">${esc(p.date ? when(p.date) : 'Home')}</span>` : ''}
         <div class="caption">
           <h3>${esc(p.name)}</h3>
           <div class="where">${esc(p.region)} · ${deg(p.lat, 'N', 'S')}, ${deg(p.lng, 'E', 'W')}</div>
@@ -311,7 +313,7 @@
     card.innerHTML = `<button class="pclose" type="button" aria-label="Close">✕</button>
       <div class="pk" style="color:${KCOL[KIND(p)]}"><i style="background:${KCOL[KIND(p)]}"></i>${KLABEL[KIND(p)]}${p.tag ? ' · ' + esc(p.tag) : ''}</div>
       <h3>${esc(p.name)}</h3>
-      <div class="pmeta">${esc(p.region)} · ${deg(p.lat, 'N', 'S')}, ${deg(p.lng, 'E', 'W')} · ${esc(when(p.date))}</div>
+      <div class="pmeta">${esc(p.region)} · ${deg(p.lat, 'N', 'S')}, ${deg(p.lng, 'E', 'W')}${p.date ? ' · ' + esc(when(p.date)) : ''}</div>
       ${p.note ? `<p>${esc(p.note)}</p>` : ''}
       <div class="pstrip">${strip}</div>
       <div class="pfoot"><span class="mono" style="color:var(--lichen);font-size:12px">${n ? n + ' photo' + (n > 1 ? 's' : '') : 'Photos coming soon'}</span><a href="#journal" data-jump="${i}">In the journal ↓</a></div>`;
