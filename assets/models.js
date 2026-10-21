@@ -320,7 +320,7 @@ function buildVolleyball() {
 }
 
 const BUILDERS = {
-  bolt: { build: buildBolt, view: { fit: 2.4, dist: 5.6, home: [0, -0.6, 0], spin: 0.004 } },
+  bolt: { build: buildBolt, view: { fit: 2.4, dist: 4.9, home: [0, -0.6, 0], spin: 0.004 } },
   controller: { build: buildController, view: { fit: 2.3, dist: 5.2, home: [1.42, 0, 0], spin: 0.0025 } },
   volleyball: { build: buildVolleyball, view: { fit: 2.0, dist: 5.2, home: [0.4, 0.6, 0.2], spin: 0.008 } },
 };
