@@ -116,7 +116,6 @@
   /* hobby cards */
   .hobbies { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
   .hobby { position: relative; padding: 28px; border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 85%, transparent); overflow: hidden; min-width: 0; scroll-margin-top: 80px; }
-  .hobby .ico { width: 46px; height: 46px; color: var(--ember); }
   .hobby h3 { font-size: 30px; margin-top: 18px; }
   .hobby p { margin: 8px 0 0; color: #d4cfc0; max-width: 46ch; }
   .hobby .tagline { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--lichen); margin-top: 16px; }
@@ -138,13 +137,19 @@
   .bike-reset:hover svg { transform: rotate(-90deg); }
   .bike-reset svg { transition: transform .4s; }
   .bike-loading { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--lichen); pointer-events: none; }
-  .vb-card { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 300px); gap: 8px 22px; align-items: center; }
+  .vb-card { grid-column: 1 / -1; display: grid; grid-template-columns: 128px minmax(0, 1fr) minmax(0, 300px); gap: 8px 24px; align-items: center; padding-block: 18px; }
   .vb-card h3 { margin-top: 0; }
-  .vb-card .ico { grid-row: span 2; }
-  .vb-card p { grid-column: 2; margin-top: 0; }
-  .vb-card .clip { grid-column: 3; grid-row: 1 / span 2; margin-top: 0; }
+  .vb-card p { margin-top: 6px; }
+  .vb-card .clip { margin-top: 0; }
+  .model-stage { position: relative; min-width: 0; }
+  .model-stage canvas { display: block; width: 100%; height: 100%; }
+  .ball-stage { height: 128px; }
+  .bike-reset.mini { right: -4px; bottom: -4px; padding: 6px; }
+  .pad-stage { height: clamp(220px, 24vw, 280px); }
   .psn { grid-column: 1 / -1; }
-  .psn-head { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .psn-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; align-items: center; }
+  .psn-text h3 { margin-top: 0; }
+  .psn-text .psn-id { margin-top: 18px; }
   .psn-id { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--lichen); }
   .psn-id img { width: 40px; height: 40px; border-radius: 50%; }
   .psn-id b { color: var(--bone); font-weight: 600; display: block; }
@@ -171,9 +176,10 @@
     .rating { border-right: 0; border-bottom: 1px solid var(--moss); }
     .hobbies { grid-template-columns: minmax(0, 1fr); }
     .bike-card { grid-template-columns: minmax(0, 1fr); padding-right: 28px; }
-    .vb-card { grid-template-columns: minmax(0, 1fr); }
-    .vb-card .ico, .vb-card p, .vb-card .clip { grid-column: auto; grid-row: auto; }
-    .vb-card .clip { margin-top: 12px; }
+    .vb-card { grid-template-columns: 96px minmax(0, 1fr); }
+    .ball-stage { height: 96px; }
+    .vb-card .clip { grid-column: 1 / -1; margin-top: 8px; }
+    .psn-head { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 520px) {
     .chess-stats { grid-template-columns: minmax(0, 1fr); }
@@ -319,17 +325,18 @@
     <div class="hobbies">
       <article class="hobby bike-card reveal" id="moto">
         <div class="bike-text">
-          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="5.5" cy="16" r="3.5"/><circle cx="18.5" cy="16" r="3.5"/><path d="M5.5 16 9 10h5l4.5 6M14 10l-2-3h-2M9 10l3 6h3"/></svg>
           <h3>Motorcycle riding</h3>
           <p>Nothing clears my head like an open road on two wheels. My ride is a Yamaha Bolt R-Spec: air-cooled V-twin, solo seat, piggyback shocks.</p>
           <div class="tagline">Drag to spin it any direction</div>
         </div>
-        <div class="bike-stage"><canvas id="bolt" aria-label="3D model of a Yamaha Bolt R-Spec. Drag to rotate it in any direction." role="img"></canvas><span class="bike-loading" id="bolt-loading">Rolling it out…</span><button class="bike-reset" id="bolt-reset" type="button" hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset view</button></div>
+        <div class="bike-stage model-stage"><canvas data-model="bolt" aria-label="3D model of a Yamaha Bolt R-Spec. Drag to rotate it in any direction." role="img"></canvas><span class="bike-loading">Rolling it out…</span><button class="bike-reset" type="button" data-reset hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset view</button></div>
       </article>
       <article class="hobby vb-card reveal" id="volleyball">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M12 3c-1 5 1 9 6 12M3.5 9c5-1 9 1 11 6.5M8 20c1-5 4-8 12-8"/></svg>
-        <h3>Volleyball</h3>
-        <p>My favorite team sport. If someone has a net up, I'm in.</p>
+        <div class="ball-stage model-stage"><canvas data-model="volleyball" aria-label="3D volleyball. Drag to spin it." role="img"></canvas><button class="bike-reset mini" type="button" data-reset hidden aria-label="Reset view"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button></div>
+        <div class="vb-text">
+          <h3>Volleyball</h3>
+          <p>My favorite team sport. If someone has a net up, I'm in.</p>
+        </div>
         <a class="clip" href="https://www.hudl.com/profile/17503000/Vishal-Kanala" target="_blank" rel="noopener">
           <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
           <span><b>Game clips</b><small>Highlights on Hudl</small></span>
@@ -338,14 +345,14 @@
       </article>
       <article class="hobby psn reveal" id="games">
         <div class="psn-head">
-          <div>
-            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 8h12a4 4 0 0 1 4 4v1a4 4 0 0 1-7 2.6L14 14h-4l-1 1.6A4 4 0 0 1 2 13v-1a4 4 0 0 1 4-4ZM7 11v3M5.5 12.5h3M16 11.5h.01M18 13.5h.01"/></svg>
+          <div class="psn-text">
             <h3>Video games</h3>
             <p>How I unwind after a long week, especially anything I can play with friends. This is what's been on my PS5 lately.</p>
+            <div class="psn-id" id="psn-id">
+              <span class="live" id="psn-status"><i></i>Connecting</span>
+            </div>
           </div>
-          <div class="psn-id" id="psn-id">
-            <span class="live" id="psn-status"><i></i>Connecting</span>
-          </div>
+          <div class="pad-stage model-stage"><canvas data-model="controller" aria-label="3D PS5 DualSense controller. Drag to rotate it in any direction." role="img"></canvas><span class="bike-loading">Charging the controller…</span><button class="bike-reset" type="button" data-reset hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset view</button></div>
         </div>
         <div class="shelf" id="psn-shelf">
           <div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div><div class="cover skeleton"></div>
@@ -568,18 +575,18 @@
 })();
 </script>
 <script type="module">
-  // 3D Yamaha Bolt R-Spec, loaded only when the card scrolls near
-  const canvas = document.getElementById('bolt');
-  const io = new IntersectionObserver(async ([e]) => {
-    if (!e.isIntersecting) return; io.disconnect();
+  // 3D hobby objects (bike, volleyball, controller): each loads only when its card scrolls near
+  const io = new IntersectionObserver((entries) => entries.forEach(async (e) => {
+    if (!e.isIntersecting) return; io.unobserve(e.target);
+    const canvas = e.target, stage = canvas.parentElement, loading = stage.querySelector('.bike-loading');
     try {
-      const { mountBolt } = await import('./assets/bolt.js');
-      const bolt = mountBolt(canvas);
-      document.getElementById('bolt-loading').remove();
-      const rb = document.getElementById('bolt-reset'); rb.hidden = false; rb.addEventListener('click', bolt.reset);
-    } catch (err) { console.error(err); document.getElementById('bolt-loading').textContent = 'The 3D bike could not load right now.'; }
-  }, { rootMargin: '300px' });
-  io.observe(canvas);
+      const { mountModel } = await import('./assets/models.js');
+      const m = mountModel(canvas, canvas.dataset.model);
+      loading?.remove();
+      const rb = stage.querySelector('[data-reset]'); if (rb) { rb.hidden = false; rb.addEventListener('click', m.reset); }
+    } catch (err) { console.error(err); if (loading) loading.textContent = 'The 3D model could not load right now.'; }
+  }), { rootMargin: '300px' });
+  document.querySelectorAll('canvas[data-model]').forEach((c) => io.observe(c));
 </script>
 </body>
 </html>
