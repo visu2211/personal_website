@@ -34,18 +34,39 @@ const hours = (iso = '') => {
   return m ? (+(m[1] || 0) + +(m[2] || 0) / 60) : 0;
 };
 
+// One entry per game even when it was played on both PS4 and PS5: hours add up, newest play date wins.
+function mergeGames(titles) {
+  const byName = new Map();
+  for (const g of titles) {
+    const name = (g.localizedName || g.name || '').trim();
+    const platform = g.category === 'ps5_native_game' ? 'PS5' : 'PS4';
+    const cur = byName.get(name);
+    if (!cur) {
+      byName.set(name, { name, image: g.localizedImageUrl || g.imageUrl, platforms: new Set([platform]), hours: hours(g.playDuration), lastPlayed: g.lastPlayedDateTime });
+    } else {
+      cur.platforms.add(platform); cur.hours += hours(g.playDuration);
+      if (g.lastPlayedDateTime > cur.lastPlayed) { cur.lastPlayed = g.lastPlayedDateTime; if (platform === 'PS5') cur.image = g.localizedImageUrl || g.imageUrl || cur.image; }
+    }
+  }
+  return [...byName.values()]
+    .sort((a, b) => (b.lastPlayed || '').localeCompare(a.lastPlayed || ''))
+    .map((g) => ({ name: g.name, image: g.image, platform: [...g.platforms].sort().reverse().join(' · '), hours: Math.round(g.hours), lastPlayed: g.lastPlayed }));
+}
+
 export default async function handler(req, res) {
   if (!process.env.PSN_NPSSO) {
     return res.status(503).json({ error: 'PlayStation is not connected yet. Add PSN_NPSSO in Vercel.' });
   }
   try {
     const a = await authorize();
-    const [played, presence, trophies, profile] = await Promise.allSettled([
-      getUserPlayedGames(a, 'me', { limit: 12, categories: 'ps4_game,ps5_native_game' }),
+    const [played, presence, trophies] = await Promise.allSettled([
+      getUserPlayedGames(a, 'me', { limit: 20, categories: 'ps4_game,ps5_native_game' }),
       getBasicPresence(a, 'me'),
       getUserTrophyProfileSummary(a, 'me'),
-      getProfileFromAccountId(a, 'me'),
     ]);
+    // the profile endpoint needs the real account id, not "me"; the trophy summary includes it
+    const accountId = trophies.status === 'fulfilled' ? trophies.value.accountId : null;
+    const [profile] = await Promise.allSettled([accountId ? getProfileFromAccountId(a, accountId) : Promise.reject(new Error('no account id'))]);
     const val = (r) => (r.status === 'fulfilled' ? r.value : null);
     const bp = val(presence)?.basicPresence;
 
@@ -58,13 +79,7 @@ export default async function handler(req, res) {
       nowPlaying: bp?.gameTitleInfoList?.[0]?.titleName ?? null,
       trophyLevel: val(trophies)?.trophyLevel ?? null,
       trophies: val(trophies)?.earnedTrophies ?? null,
-      games: (val(played)?.titles ?? []).map((g) => ({
-        name: g.localizedName || g.name,
-        image: g.localizedImageUrl || g.imageUrl,
-        platform: g.category === 'ps5_native_game' ? 'PS5' : 'PS4',
-        hours: Math.round(hours(g.playDuration)),
-        lastPlayed: g.lastPlayedDateTime,
-      })),
+      games: mergeGames(val(played)?.titles ?? []),
     });
   } catch (err) {
     auth = null;
