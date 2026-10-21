@@ -40,3 +40,8 @@ when the card shows "Offline", get a new one and replace it.
 - Scrapbook trips: put files in `scrapbook/` and add a place in `assets/places.js` (it shows on the globe too).
 
 Commit and push to publish.
+
+## Credits
+- PS5 controller: "Playstation 5 Dualsense" (https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936)
+  by AHarmlessPotato (https://sketchfab.com/AHarmlessPotato), licensed under CC BY 4.0. Tinted Cosmic Red and compressed for the web.
+- Earth at night texture: Solar System Scope (https://www.solarsystemscope.com/textures/), CC BY 4.0.

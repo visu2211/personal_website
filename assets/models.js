@@ -1,12 +1,14 @@
 // Spinnable 3D objects for the Beyond code hobby cards, built from primitives with three.js (no model files).
-// mountModel(canvas, 'bolt' | 'controller' | 'volleyball') → { reset }
+// await mountModel(canvas, 'bolt' | 'controller' | 'volleyball') → { reset }
 // Drag in any direction to spin with momentum; it idles with a slow turn. Double-click or reset() eases it home.
 // 'three' resolves through the import map in beyond.html (three@0.186.1 on jsDelivr).
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 /* ======================= shared viewer ======================= */
-export function mountModel(canvas, name, opts = {}) {
+export async function mountModel(canvas, name, opts = {}) {
   const spec = { ...BUILDERS[name].view, ...opts };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -28,7 +30,7 @@ export function mountModel(canvas, name, opts = {}) {
   const rim = new THREE.DirectionalLight('#ff9a5c', 1.2); rim.position.set(-4, 2, -3); scene.add(rim);
 
   // build, then center and scale it so every object frames the same way
-  const obj = BUILDERS[name].build();
+  const obj = await BUILDERS[name].build();
   obj.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   const box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
   const k = spec.fit / Math.max(size.x, size.y, size.z);
@@ -40,7 +42,7 @@ export function mountModel(canvas, name, opts = {}) {
   // below the object's reach in any orientation, so spinning never passes through the shadow plane
   ground.position.y = -(size.length() * k) / 2 - 0.04;
 
-  const home = new THREE.Quaternion().setFromEuler(new THREE.Euler(...spec.home));
+  const home = new THREE.Quaternion().setFromEuler(new THREE.Euler(...(obj.userData.home || spec.home)));
   pivot.quaternion.copy(home);
 
   /* free rotation: horizontal drags turn around the screen's vertical axis, vertical drags flip it over */
@@ -77,6 +79,7 @@ export function mountModel(canvas, name, opts = {}) {
     } else if (!drag) { wx *= 0.95; wy = wy * 0.95 + (reduce ? 0 : spec.spin) * 0.05; turn(wx, wy); }
     renderer.render(scene, camera);
   });
+  canvas.__viewer = { pivot, obj, stop: () => { wx = 0; wy = 0; spec.spin = 0; } }; // handy for tuning angles in the console
   return { reset };
 }
 
@@ -279,6 +282,7 @@ function buildVolleyball() {
   const bump = document.createElement('canvas'); bump.width = W; bump.height = H;
   const cx = color.getContext('2d'), bx = bump.getContext('2d');
   const img = cx.createImageData(W, H), d = img.data;
+  const seam = new Uint8Array(W * H);
   // one lap around the ball: white, red, white, blue, twice (widths in fractions of a lap)
   const bands = [['#f3f2ee', 0.16], ['#d32638', 0.07], ['#1f3c9e', 0.06], ['#f3f2ee', 0.13], ['#1f3c9e', 0.06], ['#d32638', 0.07]];
   const rgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -295,7 +299,11 @@ function buildVolleyball() {
       const next = k + 1 < stops.length ? stops[k + 1][0] : lap;
       const edge = Math.min(t - stops[k][0], next - t) * (Math.PI * 2 / lap) * Math.cos(lat);   // distance to a seam
       let [r, g, b] = stops[k][1];
-      if (edge < 0.006) { r = g = b = 40; }                   // seam
+      // fine section lines: every panel edge, plus a line down the middle of each wide white panel
+      const w = next - stops[k][0];
+      const mid = w > 0.1 ? Math.abs(t - (stops[k][0] + w / 2)) * (Math.PI * 2 / lap) * Math.cos(lat) : 1;
+      const line = Math.min(edge, mid);
+      if (line < 0.0035) { const f = 0.42 + (line / 0.0035) * 0.25; r *= f; g *= f; b *= f; seam[y * W + x] = 1; }
       const i = (y * W + x) * 4; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255;
     }
   }
@@ -311,6 +319,10 @@ function buildVolleyball() {
       bx.closePath(); bx.stroke();
     }
   }
+  // press the section lines into the surface
+  const bd = bx.getImageData(0, 0, W, H);
+  for (let i = 0; i < W * H; i++) if (seam[i]) { const j = i * 4; bd.data[j] = bd.data[j + 1] = bd.data[j + 2] = 20; }
+  bx.putImageData(bd, 0, 0);
   const map = new THREE.CanvasTexture(color); map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 8;
   const bumpMap = new THREE.CanvasTexture(bump);
   const ball = new THREE.Group();
@@ -319,8 +331,33 @@ function buildVolleyball() {
   return ball;
 }
 
+/* ======================= DualSense from a real model file ======================= */
+// "Playstation 5 Dualsense" by AHarmlessPotato on Sketchfab, CC BY 4.0
+// https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936
+// Falls back to the code-built controller if the file is missing or fails to load.
+async function loadDualSense() {
+  try {
+    const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+    const gltf = await loader.loadAsync('assets/models/dualsense.glb');
+    const root = gltf.scene;
+    // Cosmic Red: tint the white shell; multiplying keeps the black core and sticks black
+    root.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      o.material.color?.set('#a3173c');
+      o.material.envMapIntensity = 0.55;
+    });
+    // the file stands upright facing away; turn it to face the camera
+    root.rotation.set(0, Math.PI, 0);
+    root.userData.home = [0.18, 0, 0];   // slight forward tilt so the depth reads
+    return root;
+  } catch (e) {
+    console.warn('DualSense model file unavailable, using the built-in controller.', e);
+    return buildController();
+  }
+}
+
 const BUILDERS = {
   bolt: { build: buildBolt, view: { fit: 2.4, dist: 4.9, home: [0, -0.6, 0], spin: 0.004 } },
-  controller: { build: buildController, view: { fit: 2.3, dist: 5.2, home: [1.42, 0, 0], spin: 0.0025 } },
+  controller: { build: loadDualSense, view: { fit: 2.75, dist: 5.2, home: [1.42, 0, 0], spin: 0.0025 } },
   volleyball: { build: buildVolleyball, view: { fit: 2.0, dist: 5.2, home: [0.4, 0.6, 0.2], spin: 0.008 } },
 };
