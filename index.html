@@ -252,8 +252,10 @@
 
   <section class="campfire wrap" id="campfire" data-trail="Campfire">
     <div class="camp reveal" id="camp">
-      <h2 class="camp-title" id="camp-head"><button class="pull" id="grab" type="button" aria-describedby="camp-hint">Pull up a log.</button><span class="talk">Let's talk.</span></h2>
-      <p class="camp-hint" id="camp-hint">Click “Pull up a log” to join me</p>
+      <div class="camp-top"><div>
+        <h2 class="camp-title" id="camp-head"><button class="pull" id="grab" type="button" aria-describedby="camp-hint">Pull up a log.</button><span class="talk">Let's talk.</span></h2>
+        <p class="camp-hint" id="camp-hint">Click “Pull up a log” to join me</p>
+      </div></div>
       <svg class="camp-svg" viewBox="0 0 640 330" role="img" aria-labelledby="camp-title">
         <title id="camp-title">A crackling campfire</title>
         <defs>
@@ -279,12 +281,12 @@
         </g>
 
         <!-- the seat: a log rolled up beside the fire -->
-        <g class="seat" transform="translate(455 292) scale(1.3)">
+        <g class="seat" transform="translate(520 292) scale(1.3)">
           <g class="seat-drop"><rect x="-44" y="-20" width="88" height="20" rx="10"/><ellipse class="ring" cx="-38" cy="-10" rx="6" ry="9.5"/></g>
         </g>
 
         <!-- someone carrying the log in, then sitting on it facing the fire -->
-        <g class="walker" transform="translate(505 292) scale(1.3)">
+        <g class="walker" transform="translate(570 292) scale(1.3)">
           <g class="walk-in">
             <g class="body">
               <g class="carried"><rect x="-14" y="-114" width="82" height="17" rx="8.5" transform="rotate(-12 0 -106)"/></g>
@@ -295,7 +297,7 @@
             </g>
           </g>
         </g>
-        <g class="sitter" transform="translate(460 266) scale(1.3)">
+        <g class="sitter" transform="translate(525 266) scale(1.3)">
           <g class="sit-down">
             <circle cx="-18" cy="-74" r="11"/>
             <path d="M0 0-12-58"/>
@@ -303,6 +305,18 @@
             <path d="M-11-50-42-30"/>
           </g>
         </g>
+        <!-- me, on the other side of the fire -->
+        <g class="host-seat" transform="translate(120 292) scale(-1.3 1.3)"><rect x="-44" y="-20" width="88" height="20" rx="10"/><ellipse class="ring" cx="-38" cy="-10" rx="6" ry="9.5"/></g>
+        <g class="host" transform="translate(115 266) scale(-1.3 1.3)">
+          <g class="host-pose">
+            <circle cx="-18" cy="-74" r="11"/>
+            <path d="M0 0-12-58"/>
+            <path d="M0 0H-34L-38 20M-4 0H-30L-30 20"/>
+            <path d="M-11-50-42-30"/>
+          </g>
+        </g>
+        <g class="bubble b1" transform="translate(160 128)"><rect x="-24" y="-15" width="48" height="28" rx="14"/><circle cx="-10" cy="-1" r="3"/><circle cx="0" cy="-1" r="3"/><circle cx="10" cy="-1" r="3"/></g>
+        <g class="bubble b2" transform="translate(480 128)"><rect x="-24" y="-15" width="48" height="28" rx="14"/><circle cx="-10" cy="-1" r="3"/><circle cx="0" cy="-1" r="3"/><circle cx="10" cy="-1" r="3"/></g>
       </svg>
       <div class="camp-after"><p class="camp-note" id="camp-note" aria-live="polite"></p><button class="reset" id="camp-reset" type="button" hidden>Put the log back</button></div>
     </div>
@@ -343,7 +357,7 @@
   const counts = { places: places.length, states, countries: regions.size - states + (states ? 1 : 0) };
   document.querySelectorAll('[data-places]').forEach((el) => { el.textContent = counts[el.dataset.places]; });
 
-  // campfire: clicking "Pull up a log" topples the heading over to the left, then someone carries a log in and sits by the fire
+  // campfire: clicking "Pull up a log" topples the heading over to the left, then someone carries a log in and sits across the fire from me
   (() => {
     const camp = document.getElementById('camp'), btn = document.getElementById('grab'), reset = document.getElementById('camp-reset');
     const note = document.getElementById('camp-note'), head = document.getElementById('camp-head');
@@ -358,14 +372,15 @@
     btn.addEventListener('click', () => {
       if (camp.classList.contains('toppled')) return;
       camp.classList.add('toppled');
-      later(1400, () => camp.classList.add('walking'));
-      later(2900, () => camp.classList.add('placed'));
-      later(3500, () => camp.classList.add('seated'));
-      later(4100, () => { note.textContent = "Seat's yours. Say hi whenever you like ↓"; reset.hidden = false; });
+      later(1200, () => camp.classList.add('cleared'));
+      later(1900, () => camp.classList.add('walking'));
+      later(3400, () => camp.classList.add('placed'));
+      later(4000, () => camp.classList.add('seated'));
+      later(4600, () => { note.textContent = "Seat's yours. Say hi whenever you like ↓"; reset.hidden = false; });
     });
     reset.addEventListener('click', () => {
       timers.forEach(clearTimeout); timers = [];
-      camp.classList.remove('toppled', 'walking', 'placed', 'seated');
+      camp.classList.remove('toppled', 'cleared', 'walking', 'placed', 'seated');
       note.textContent = ''; reset.hidden = true; btn.focus();
     });
   })();
