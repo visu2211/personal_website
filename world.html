@@ -34,6 +34,18 @@
     display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
   .chips button { display: inline-flex; align-items: center; gap: 8px; font: 500 11.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--lichen);
     background: color-mix(in srgb, var(--pine) 75%, transparent); backdrop-filter: blur(6px); border: 1px solid var(--moss); border-radius: 999px; padding: 8px 14px; cursor: pointer; transition: color .2s, border-color .2s, transform .2s; }
+  .chips .vgroup .vcount { font-size: 10.5px; padding: 1px 6px; border-radius: 99px; background: var(--night); color: var(--bone); }
+  .chips .vgroup .vcaret { font-size: 9px; transition: transform .25s; }
+  .chips .vgroup[aria-expanded="true"] .vcaret { transform: rotate(180deg); }
+  .chips .vgroup[aria-pressed="true"], .chips .vgroup[aria-expanded="true"] { color: var(--bone); border-color: var(--ember); }
+  .vpanel { position: absolute; left: 50%; bottom: calc(100% + 12px); transform: translateX(-50%); z-index: 5; width: min(640px, calc(100vw - 32px)); padding: 16px;
+    border-radius: 16px; background: color-mix(in srgb, var(--pine) 94%, transparent); backdrop-filter: blur(12px); border: 1px solid var(--moss); box-shadow: 0 24px 50px -20px #000; animation: vIn .25s ease-out; }
+  .vpanel[hidden] { display: none; }
+  @keyframes vIn { from { opacity: 0; transform: translate(-50%, 8px); } }
+  .vhead { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--lichen); margin: 0 4px 10px; }
+  .vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+  .chips .vgrid button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; text-align: left; letter-spacing: .06em; padding: 9px 12px; border-radius: 10px; transform: none; }
+  .chips .vgrid button small { font-family: var(--f-body); font-size: 11.5px; letter-spacing: 0; text-transform: none; color: var(--lichen); opacity: .8; }
   .chips button i { width: 7px; height: 7px; border-radius: 50%; }
   .chips button:hover { color: var(--bone); transform: translateY(-2px); }
   .chips button[aria-pressed="true"] { color: var(--bone); border-color: var(--ember); }
@@ -125,8 +137,26 @@
 
 
   /* ---------- place chips ---------- */
-  $('chips').innerHTML = places.map((p, i) => `<button type="button" data-i="${i}" aria-pressed="false"><i style="background:${KCOL[KIND(p)]}"></i>${esc(p.name)}</button>`).join('');
-  $('chips').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) select(+b.dataset.i); });
+  // home, school and work get their own buttons; every visited place folds into one "Visited" button with a list
+  const chip = (p, i) => `<button type="button" data-i="${i}" aria-pressed="false"><i style="background:${KCOL[KIND(p)]}"></i>${esc(p.name)}</button>`;
+  // visited places, nearest to home first (great-circle distance)
+  const homeP = places.find((p) => KIND(p) === 'home') || places[0];
+  const km = (a, b) => { const r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)); };
+  const visited = places.map((p, i) => [p, i]).filter(([p]) => KIND(p) === 'visited').sort(([a], [b]) => km(homeP, a) - km(homeP, b));
+  $('chips').innerHTML = places.map((p, i) => (KIND(p) === 'visited' ? '' : chip(p, i))).join('')
+    + (visited.length ? `<button type="button" class="vgroup" aria-expanded="false" aria-controls="chips-visited"><i style="background:${KCOL.visited}"></i>Visited <span class="vcount">${visited.length}</span><span class="vcaret" aria-hidden="true">▴</span></button>
+      <div class="vpanel" id="chips-visited" hidden><div class="vhead">Places I've visited</div><div class="vgrid">${visited.map(([p, i]) => `<button type="button" data-i="${i}" aria-pressed="false"><span>${esc(p.name)}</span><small>${esc(p.region)}</small></button>`).join('')}</div></div>` : '');
+  const vbtn = $('chips').querySelector('.vgroup'), vpanel = $('chips').querySelector('.vpanel');
+  const openVisited = (open) => { if (!vbtn) return; vpanel.hidden = !open; vbtn.setAttribute('aria-expanded', String(open)); };
+  $('chips').addEventListener('click', (e) => {
+    if (e.target.closest('.vgroup')) return openVisited(vpanel.hidden);
+    const b = e.target.closest('[data-i]'); if (b) { openVisited(false); select(+b.dataset.i); }
+  });
+  document.addEventListener('click', (e) => { if (vpanel && !vpanel.hidden && !e.target.closest('#chips')) openVisited(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') openVisited(false); });
+  // the Visited button lights up when one of its places is selected
+  const markGroup = (i) => vbtn?.setAttribute('aria-pressed', String(i != null && KIND(places[i]) === 'visited'));
   // keep the title above the place buttons however many rows they wrap to
   const fitTitle = () => document.documentElement.style.setProperty('--chips-h', $('chips').offsetHeight + 'px');
   fitTitle(); addEventListener('resize', fitTitle);
@@ -199,7 +229,7 @@
   function select(i) {
     const p = places[i]; if (!p) return;
     pause();
-    $('chips').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', +b.dataset.i === i));
+    $('chips').querySelectorAll('[data-i]').forEach((b) => b.setAttribute('aria-pressed', +b.dataset.i === i)); markGroup(i);
     const n = p.photos?.length || 0;
     const strip = (n ? p.photos.slice(0, 4) : [null, null]).map((src, k) => src
       ? `<button type="button" data-open="${i}" data-idx="${k}" aria-label="Open photo ${k + 1}"><img src="${esc(src)}" alt="" loading="lazy"></button>`
@@ -217,7 +247,7 @@
   }
   function deselect() {
     $('card').hidden = true; SEL.p = null; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([]);
-    $('chips').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    $('chips').querySelectorAll('[data-i]').forEach((b) => b.setAttribute('aria-pressed', 'false')); markGroup(null);
     world.pointOfView({ altitude: 2.25 }, 1400);
     resumeLater(1500);
   }
