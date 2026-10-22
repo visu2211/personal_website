@@ -46,7 +46,7 @@ function waitForCode(state) {
 
 async function main() {
   console.log('\nConnect Spotify to vishalkanala.com\n');
-  if (!existsSync('.vercel/project.json') && !vercel(['link'])) throw new Error('Vercel link did not finish.');
+  if (!existsSync('.vercel/project.json') && !existsSync('.vercel/repo.json') && !vercel(['link'])) throw new Error('Vercel link did not finish.');
   const id = await ask('Spotify Client ID: ');
   const secret = await ask('Spotify Client Secret (hidden): ', { hidden: true });
   if (!id || !secret) throw new Error('Both the Client ID and Secret are needed.');
