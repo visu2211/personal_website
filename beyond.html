@@ -69,6 +69,8 @@
 
   /* music */
   .music { margin-top: 36px; display: grid; gap: 26px; padding: 24px; border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); }
+  .sp-ava { width: 44px; height: 44px; flex: none; border-radius: 10px; display: grid; place-items: center; color: var(--win); background: var(--moss) center / cover no-repeat; }
+  .sp-ava.photo svg { display: none; }
   .np { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 14px; background: var(--night); border: 1px solid var(--moss); min-width: 0; text-decoration: none; }
   a.np:hover { border-color: var(--ember); }
   .np-art { width: 64px; height: 64px; flex: none; border-radius: 10px; background: var(--moss) center / cover no-repeat; }
@@ -77,6 +79,7 @@
   .np-label.on { color: var(--win); }
   .np-text b { font-size: 17px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .np-text small { color: var(--lichen); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .eq[hidden] { display: none; }
   .eq { margin-left: auto; display: flex; align-items: flex-end; gap: 3px; height: 22px; }
   .eq i { width: 4px; background: var(--win); border-radius: 2px; animation: eq 1s ease-in-out infinite; }
   .eq i:nth-child(2) { animation-delay: .2s; } .eq i:nth-child(3) { animation-delay: .4s; } .eq i:nth-child(4) { animation-delay: .1s; }
@@ -98,7 +101,7 @@
   .recent { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
   .recent a { grid-template-columns: 40px minmax(0, 1fr) auto; }
   .recent .ago { font-family: var(--f-mono); font-size: 11px; color: var(--lichen); white-space: nowrap; }
-  .music.offline .music-grid, .music.offline .recent, .music.offline .tlabel { display: none; }
+  .music.offline .music-grid, .music.offline .music-recent, .music.offline .tfoot { display: none; }
   /* training */
   .train { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
   .tpanel { border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); padding: 22px 24px; display: flex; flex-direction: column; gap: 20px; min-width: 0; scroll-margin-top: 80px; }
@@ -251,20 +254,62 @@
   <section class="page-head" data-trail="Beyond code">
     <div class="eyebrow rise">Beyond code <span class="coord">Off the clock</span></div>
     <h1 class="rise" style="--i:1">What I do when<br>I'm <span>not coding</span></h1>
-    <p class="lede rise" style="--i:2">Gym time, miles on the road, court time, and a lot of chess. Here's the stuff that keeps me sane.</p>
+    <p class="lede rise" style="--i:2">Gym time, miles on the road, a lot of chess, and whatever's on repeat. Here's the stuff that keeps me sane.</p>
     <nav class="hobby-index rise" style="--i:3" aria-label="Hobbies">
-      <a href="#chess"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M9 18h6l1-3H8l1 3ZM10 15l-1-5h6l-1 5M12 3v4M10 5h4M9 10h6"/></svg>Chess</a>
-      <a href="#music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-1 6.5-.7 9 .8M8 12.6c2.4-.7 5.2-.4 7.2.7M8.6 15.4c1.9-.5 3.9-.3 5.5.5"/></svg>Music</a>
       <a href="#training"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>Lifting</a>
       <a href="#running"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="15" cy="4.5" r="2"/><path d="m6 21 3-6 3 2v4M9 15l1.5-5L14 8l2 4 3 1M10.5 10 7 11l-2 3"/></svg>Running</a>
+      <a href="#chess"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M9 18h6l1-3H8l1 3ZM10 15l-1-5h6l-1 5M12 3v4M10 5h4M9 10h6"/></svg>Chess</a>
+      <a href="#music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-1 6.5-.7 9 .8M8 12.6c2.4-.7 5.2-.4 7.2.7M8.6 15.4c1.9-.5 3.9-.3 5.5.5"/></svg>Music</a>
       <a href="#volleyball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3c-1 5 1 9 6 12M3.5 9c5-1 9 1 11 6.5M8 20c1-5 4-8 12-8"/></svg>Volleyball</a>
       <a href="#moto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5.5" cy="16" r="3.5"/><circle cx="18.5" cy="16" r="3.5"/><path d="M5.5 16 9 10h5l4.5 6M14 10l-2-3h-2M9 10l3 6h3"/></svg>Motorcycles</a>
       <a href="#games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12a4 4 0 0 1 4 4v1a4 4 0 0 1-7 2.6L14 14h-4l-1 1.6A4 4 0 0 1 2 13v-1a4 4 0 0 1 4-4ZM7 11v3M5.5 12.5h3M16 11.5h.01M18 13.5h.01"/></svg>Video games</a>
     </nav>
   </section>
 
+  <section class="sec" id="training" data-trail="Training">
+    <div class="eyebrow reveal">Training · Hevy + Strava</div>
+    <h2 class="reveal">Lift heavy, run far</h2>
+    <p class="sec-intro reveal">Most mornings start in the gym or on a run. I log lifts in Hevy and runs in Strava.</p>
+    <div class="train">
+      <article class="tpanel reveal" id="lifting">
+        <div class="tp-top">
+          <div class="who">
+            <img src="https://d2l9nsnmtah87f.cloudfront.net/profile-images/visu22-46c022ad-3ca0-47c4-9df7-c89d2c20f022.jpg" alt="" width="44" height="44" loading="lazy">
+            <div><b>Weightlifting</b><small>visu22 on Hevy</small></div>
+          </div>
+          <a class="btn" href="https://hevy.com/user/visu22" target="_blank" rel="noopener">Hevy ↗</a>
+        </div>
+        <div class="tstats" id="lift-stats">
+          <div><b>—</b><span>workouts logged</span></div><div><b>—</b><span>this year</span></div><div><b>—</b><span>last 30 days</span></div>
+        </div>
+        <div class="heat-wrap"><div class="tlabel">Last 20 weeks</div><div class="heat" id="heat" aria-label="Training days over the last 20 weeks"></div></div>
+        <div id="lift-detail"></div>
+      </article>
+
+      <article class="tpanel reveal" id="running">
+        <div class="tp-top">
+          <div class="who">
+            <img src="https://dgalywyr863hv.cloudfront.net/pictures/athletes/1299184236/57486017/1/large.jpg" alt="" width="44" height="44" loading="lazy">
+            <div><b>Running</b><small>visu22 on Strava</small></div>
+          </div>
+          <a class="btn" href="https://www.strava.com/athletes/visu22" target="_blank" rel="noopener">Strava ↗</a>
+        </div>
+        <div class="tstats" id="run-stats">
+          <div><b>—</b><span>miles, last 4 weeks</span></div><div><b>—</b><span>miles this year</span></div><div><b>—</b><span>miles all time</span></div>
+        </div>
+        <div class="wk-wrap">
+          <div class="tlabel">Weekly miles · last 20 weeks</div>
+          <div class="wk" id="wk"><svg id="wk-svg" role="img" aria-label="Bar chart of miles run each week for the last 20 weeks"></svg><div class="wk-tip" id="wk-tip" hidden></div></div>
+          <table class="sr" id="wk-table"><caption>Miles run per week</caption><thead><tr><th>Week of</th><th>Miles</th><th>Runs</th></tr></thead><tbody></tbody></table>
+        </div>
+        <div id="run-detail"><div class="tlabel">Recent runs</div><ol class="tlist" id="run-list"><li class="muted">Loading runs…</li></ol></div>
+        <div class="tfoot" id="run-foot">From my Strava log</div>
+      </article>
+    </div>
+  </section>
+
   <section class="sec" id="chess" data-trail="Chess">
-    <div class="eyebrow reveal">Chess · live</div>
+    <div class="eyebrow reveal">Chess · chess.com</div>
     <h2 class="reveal">Over the board</h2>
     <p class="sec-intro reveal">Thousands of games on chess.com, mostly blitz. These numbers update every time you load the page.</p>
 
@@ -316,10 +361,17 @@
   </section>
 
   <section class="sec" id="music" data-trail="Music">
-    <div class="eyebrow reveal">Listening · Spotify</div>
+    <div class="eyebrow reveal">Music · Spotify</div>
     <h2 class="reveal">On repeat</h2>
     <p class="sec-intro reveal">What I've had on lately, straight from my Spotify.</p>
     <div class="music reveal" id="music-card">
+      <div class="tp-top">
+        <div class="who">
+          <span class="sp-ava" id="sp-ava"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6.5 9.5c3.6-1.1 7.6-.8 11 1M7.2 12.8c2.9-.8 6.1-.5 8.6.9M7.9 15.9c2.2-.6 4.5-.4 6.3.6"/></svg></span>
+          <div><b>Listening</b><small id="sp-name">on Spotify</small></div>
+        </div>
+        <a class="btn" id="sp-link" href="https://open.spotify.com" target="_blank" rel="noopener">Spotify ↗</a>
+      </div>
       <div class="np" id="np">
         <div class="np-art" id="np-art"></div>
         <div class="np-text"><span class="np-label" id="np-label">Connecting to Spotify…</span><b id="np-title"></b><small id="np-artist"></small></div>
@@ -329,65 +381,16 @@
         <div><div class="tlabel">Top artists · last 4 weeks</div><div class="artists" id="top-artists"></div></div>
         <div><div class="tlabel">Top tracks · last 4 weeks</div><ol class="tracks" id="top-tracks"></ol></div>
       </div>
-      <div><div class="tlabel">Recently played</div><ol class="recent" id="recent-tracks"></ol></div>
+      <div class="music-recent"><div class="tlabel">Recently played</div><ol class="recent" id="recent-tracks"></ol></div>
       <div class="tfoot" id="music-foot">Live from Spotify</div>
     </div>
   </section>
 
-  <section class="sec" id="training" data-trail="Training">
-    <div class="eyebrow reveal">Training · Hevy + Strava</div>
-    <h2 class="reveal">Lift heavy, run far</h2>
-    <p class="sec-intro reveal">Most mornings start in the gym or on a run. I log lifts in Hevy and runs in Strava.</p>
-    <div class="train">
-      <article class="tpanel reveal" id="lifting">
-        <div class="tp-top">
-          <div class="who">
-            <img src="https://d2l9nsnmtah87f.cloudfront.net/profile-images/visu22-46c022ad-3ca0-47c4-9df7-c89d2c20f022.jpg" alt="" width="44" height="44" loading="lazy">
-            <div><b>Weightlifting</b><small>visu22 on Hevy</small></div>
-          </div>
-          <a class="btn" href="https://hevy.com/user/visu22" target="_blank" rel="noopener">Hevy ↗</a>
-        </div>
-        <div class="tstats" id="lift-stats">
-          <div><b>—</b><span>workouts logged</span></div><div><b>—</b><span>this year</span></div><div><b>—</b><span>last 30 days</span></div>
-        </div>
-        <div class="heat-wrap"><div class="tlabel">Last 20 weeks</div><div class="heat" id="heat" aria-label="Training days over the last 20 weeks"></div></div>
-        <div id="lift-detail"></div>
-      </article>
-
-      <article class="tpanel reveal" id="running">
-        <div class="tp-top">
-          <div class="who">
-            <img src="https://dgalywyr863hv.cloudfront.net/pictures/athletes/1299184236/57486017/1/large.jpg" alt="" width="44" height="44" loading="lazy">
-            <div><b>Running</b><small>Vishal on Strava</small></div>
-          </div>
-          <a class="btn" href="https://www.strava.com/athletes/visu22" target="_blank" rel="noopener">Strava ↗</a>
-        </div>
-        <div class="tstats" id="run-stats">
-          <div><b>—</b><span>miles, last 4 weeks</span></div><div><b>—</b><span>miles this year</span></div><div><b>—</b><span>miles all time</span></div>
-        </div>
-        <div class="wk-wrap">
-          <div class="tlabel">Weekly miles · last 20 weeks</div>
-          <div class="wk" id="wk"><svg id="wk-svg" role="img" aria-label="Bar chart of miles run each week for the last 20 weeks"></svg><div class="wk-tip" id="wk-tip" hidden></div></div>
-          <table class="sr" id="wk-table"><caption>Miles run per week</caption><thead><tr><th>Week of</th><th>Miles</th><th>Runs</th></tr></thead><tbody></tbody></table>
-        </div>
-        <div id="run-detail"><div class="tlabel">Recent runs</div><ol class="tlist" id="run-list"><li class="muted">Loading runs…</li></ol></div>
-        <div class="tfoot" id="run-foot">From my Strava log</div>
-      </article>
-    </div>
-  </section>
-
   <section class="sec" id="court" data-trail="Hobbies">
-    <div class="eyebrow reveal">Everything else</div>
+    <div class="eyebrow reveal">Hobbies · everything else</div>
     <h2 class="reveal">Court, road, controller</h2>
+    <p class="sec-intro reveal">The rest of my free time: on the court, out on two wheels, or on the couch with a controller. Drag any of the 3D models to spin them.</p>
     <div class="hobbies">
-      <article class="hobby bike-card reveal" id="moto">
-        <div class="bike-text">
-          <h3>Motorcycle riding</h3>
-          <p>Nothing clears my head like an open road on two wheels. My ride is a Yamaha Bolt R-Spec: air-cooled V-twin, solo seat, piggyback shocks.</p>
-          <div class="tagline">Drag to spin it any direction</div>
-        </div>
-        <div class="bike-stage model-stage"><canvas data-model="bolt" aria-label="3D model of a Yamaha Bolt R-Spec. Drag to rotate it in any direction." role="img"></canvas><span class="bike-loading">Rolling it out…</span><button class="bike-reset" type="button" data-reset hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset view</button></div>
-      </article>
       <article class="hobby vb-card reveal" id="volleyball">
         <div class="ball-stage model-stage"><canvas data-model="volleyball" aria-label="3D volleyball. Drag to spin it." role="img"></canvas><button class="bike-reset mini" type="button" data-reset hidden aria-label="Reset view"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button></div>
         <div class="vb-text">
@@ -399,6 +402,13 @@
           <span><b>Game clips</b><small>Highlights on Hudl</small></span>
           <span class="arrow" aria-hidden="true">↗</span>
         </a>
+      </article>
+      <article class="hobby bike-card reveal" id="moto">
+        <div class="bike-text">
+          <h3>Motorcycle riding</h3>
+          <p>Nothing clears my head like an open road on two wheels. My ride is a Yamaha Bolt R-Spec: air-cooled V-twin, solo seat, piggyback shocks.</p>
+        </div>
+        <div class="bike-stage model-stage"><canvas data-model="bolt" aria-label="3D model of a Yamaha Bolt R-Spec. Drag to rotate it in any direction." role="img"></canvas><span class="bike-loading">Rolling it out…</span><button class="bike-reset" type="button" data-reset hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Reset view</button></div>
       </article>
       <article class="hobby psn reveal" id="games">
         <div class="psn-head">
@@ -498,7 +508,7 @@
     $('tactics').textContent = fmt(s.tactics); $('rush').textContent = fmt(s.puzzleRush);
     const total = Object.values(s.modes).reduce((a, m) => a + (m ? m.w + m.l + m.d : 0), 0);
     $('total').textContent = fmt(total);
-    $('chess-updated').textContent = s.live ? 'Live from the chess.com public API' : 'Showing a saved snapshot from Oct 2026';
+    $('chess-updated').textContent = s.live ? 'Live from chess.com · refreshes on every visit' : 'Showing a saved snapshot from Oct 2026';
     renderMode();
   });
   ChessLive.games(80).then((g) => { G = g; renderGames(); renderSpark(); });
@@ -530,7 +540,7 @@
       <div class="tlabel">Recent workouts</div>
       <ol class="tlist">${H.recent.slice(0, 3).map((w) => `<li><span class="nm">${esc(w.title)}</span><span class="num">${fmt(w.volumeLbs)} lb</span>
         <span class="sub">${shortDate(w.date)} · ${w.exercises} exercises · ${w.sets} sets${w.minutes ? ' · ' + w.minutes + ' min' : ''}</span></li>`).join('')}</ol>
-      <div class="tfoot" style="margin-top:12px">From my Hevy log, updated ${shortDate(H.generated)}</div>`;
+      <div class="tfoot">From my Hevy log · updated ${shortDate(H.generated)}</div>`;
   })();
 
 
@@ -547,6 +557,11 @@
       const r = await fetch('/api/spotify');
       if (!r.ok) throw new Error(r.status);
       const d = await r.json();
+      if (d.profile) {
+        $('sp-name').textContent = `${d.profile.name} on Spotify`;
+        if (d.profile.url) $('sp-link').href = d.profile.url;
+        if (d.profile.image) { $('sp-ava').style.backgroundImage = `url('${esc(d.profile.image)}')`; $('sp-ava').classList.add('photo'); }
+      }
       const np = d.nowPlaying, last = d.recent?.[0];
       const show = np || last;
       $('np-label').textContent = np ? 'Now playing' : last ? `Last played · ${ago(last.playedAt)}` : 'Nothing playing';
@@ -558,7 +573,7 @@
       $('top-artists').innerHTML = d.topArtists.map((a) => `<a href="${esc(a.url)}" target="_blank" rel="noopener"><span style="${bg(a.image)}"></span><b>${esc(a.name)}</b></a>`).join('');
       $('top-tracks').innerHTML = d.topTracks.map((t, i) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="art" style="${bg(t.image)}"></span><span class="t"><b>${esc(t.name)}</b><small>${esc(t.artists)}</small></span><span></span></a></li>`).join('');
       $('recent-tracks').innerHTML = d.recent.slice(0, 6).map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener"><span class="art" style="${bg(t.image)}"></span><span class="t"><b>${esc(t.name)}</b><small>${esc(t.artists)}</small></span><span class="ago">${ago(t.playedAt)}</span></a></li>`).join('');
-      $('music-foot').textContent = 'Live from Spotify · refreshes every couple of minutes';
+      $('music-foot').textContent = 'Live from Spotify · refreshes every 2 minutes';
     } catch {
       card.classList.add('offline');
       $('np-label').textContent = 'Spotify is offline right now';
@@ -653,7 +668,7 @@
       $('run-list').innerHTML = d.runs.length ? d.runs.slice(0, 3).map((x) => `<li><a class="nm" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a><span class="num">${x.miles} mi</span>
         <span class="sub">${shortDate(x.date)} · ${pace(x.paceSecPerMi)}${x.elevFt ? ' · ' + x.elevFt + ' ft gain' : ''}</span></li>`).join('')
         : '<li class="muted">No runs logged recently.</li>';
-      $('run-foot').textContent = `From my Strava log · ${fmt(d.ytd?.runs)} runs this year · updated ${shortDate(d.generated)}`;
+      $('run-foot').textContent = `From my Strava log · updated ${shortDate(d.generated)}`;
     } catch {
       $('run-list').innerHTML = '<li class="muted">Recent runs are unavailable right now. See them on Strava.</li>';
       $('run-foot').textContent = '';

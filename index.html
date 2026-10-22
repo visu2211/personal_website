@@ -42,7 +42,7 @@
         <h1 class="rise" style="--i:1">Vishal<br><span class="last">Kanala</span></h1>
         <p class="lede rise" style="--i:2">Computer Science and Data Science student at Rutgers. I work on backend systems and infrastructure, most recently at Capital One.</p>
         <div class="cta rise" style="--i:4">
-          <a class="btn solid" href="#log">See the trail log ↓</a>
+          <a class="btn solid" href="#log">See where I've worked ↓</a>
           <a class="btn" href="https://github.com/visu2211" target="_blank" rel="noopener">GitHub ↗</a>
           <a class="btn" href="https://linkedin.com/in/vishal-kanala" target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
@@ -74,8 +74,25 @@
         <div><dt>Based in</dt><dd>Princeton, New Jersey</dd></div>
         <div><dt>Studying</dt><dd>CS + Data Science, Rutgers '27</dd></div>
         <div><dt>Into</dt><dd>Low-latency systems, distributed systems, infrastructure design</dd></div>
-        <div><dt>Off the clock</dt><dd>Lifting, running, volleyball, chess, motorcycles</dd></div>
+        <div><dt>Off the clock</dt><dd>Lifting, running, chess, volleyball, motorcycles</dd></div>
         <div><dt>Say hi</dt><dd><a href="#campfire">Pull up a log ↓</a></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="basecamp" data-trail="Base camp">
+    <div class="eyebrow reveal">Base camp</div>
+    <h2 class="reveal">Where I study</h2>
+    <div class="edu reveal">
+      <div>
+        <div class="co"><span class="org static"><img src="assets/logos/rutgers.svg" alt="Rutgers logo" width="40" height="40"></span><h3>Rutgers University<br>Honors College</h3></div>
+        <p class="deg">B.S. Computer Science &amp; Data Science<br>Minor in Quantitative Economics</p>
+      </div>
+      <dl>
+        <dt>Class of</dt><dd>December 2027</dd>
+        <dt>GPA</dt><dd>3.9 / 4.0</dd>
+        <dt>Courses</dt><dd>Distributed Systems, Operating Systems, Machine Learning, Intro to AI, Algorithms, Linear Algebra</dd>
+        <dt>Honors</dt><dd>CS Departmental Honors, Rutgers Excellence Award, Dean's List every semester</dd>
       </dl>
     </div>
   </section>
@@ -125,10 +142,17 @@
     </div>
   </section>
 
-  <section class="sec wrap" id="projects" data-trail="Projects">
+  <section class="sec wrap" id="projects" data-trail="Expeditions">
     <div class="eyebrow reveal">Expeditions</div>
-    <h2 class="reveal">Things I've built</h2>
+    <h2 class="reveal">What I've built</h2>
     <div class="projects">
+      <article class="proj reveal">
+        <div class="proj-top"><h3>Open Tab in Profile</h3><span class="date">Aug 2026</span></div>
+        <p>A Chrome extension that sends the current tab, or a whole shift-selected group of tabs, to another Chrome profile or an Incognito window with one click or a right-click.</p>
+        <p>Chrome won't let extensions launch other profiles, so a small local helper reads your profile list (avatars included) and opens the tabs there. It never touches the network.</p>
+        <div class="stack">JavaScript · Chrome MV3 · Python · Native Messaging</div>
+        <div class="links"><a href="https://github.com/visu2211/open-in-profile" target="_blank" rel="noopener">GitHub ↗</a><a href="https://chromewebstore.google.com/detail/open-tab-in-profile/ghlooolfgfmophmhdidhpdgdfemibaab" target="_blank" rel="noopener">Chrome Web Store ↗</a></div>
+      </article>
       <article class="proj reveal">
         <div class="proj-top"><h3>GuardPost</h3><span class="date">Jul 2026</span></div>
         <p>An AI guardrail platform that intercepts LLM prompts before sensitive data leaks out. A two-stage pipeline pairs regex matching with Claude Haiku classification to catch PII, credentials, financial records, and proprietary data.</p>
@@ -145,16 +169,20 @@
       <article class="proj reveal">
         <div class="proj-top"><h3>DinInRU</h3><span class="date">Jan 2025</span></div>
         <p>A restaurant review platform for Rutgers students with 100+ users. REST APIs for reviews, JWT auth, and a Google Maps view of 50 restaurants around campus.</p>
-        <div class="stack">MongoDB · Express · React · Node · Tailwind</div>
+        <div class="stack">MongoDB · Express · React · Node.js · Tailwind</div>
         <div class="links"><a href="https://frontend-visu22.vercel.app" target="_blank" rel="noopener">Live site ↗</a><a href="https://github.com/visu2211/DinInRu" target="_blank" rel="noopener">GitHub ↗</a></div>
       </article>
-      <article class="proj reveal">
-        <div class="proj-top"><h3>Open Tab in Profile</h3><span class="date">Aug 2026</span></div>
-        <p>A Chrome extension that sends the current tab, or a whole shift-selected group of tabs, to another Chrome profile or an Incognito window with one click or a right-click.</p>
-        <p>Chrome won't let extensions launch other profiles, so a small local helper reads your profile list (avatars included) and opens the tabs there. It never touches the network.</p>
-        <div class="stack">JavaScript · Chrome Extensions (MV3) · Python · Native Messaging</div>
-        <div class="links"><a href="https://github.com/visu2211/open-in-profile" target="_blank" rel="noopener">GitHub ↗</a><a href="https://chromewebstore.google.com/detail/open-tab-in-profile/ghlooolfgfmophmhdidhpdgdfemibaab" target="_blank" rel="noopener">Chrome Web Store ↗</a></div>
-      </article>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="pack" data-trail="Pack list">
+    <div class="eyebrow reveal">Pack list</div>
+    <h2 class="reveal">What I carry</h2>
+    <div class="pack reveal">
+      <div><h3>Languages</h3><ul><li>Java · Scala</li><li>Python · R</li><li>TypeScript · JavaScript</li><li>C · C++</li><li>SQL · Bash</li><li>Swift</li></ul></div>
+      <div><h3>Cloud</h3><ul><li>AWS Fargate · ECS</li><li>Lambda · EC2</li><li>S3 · Glue</li><li>EventBridge · KMS</li><li>Kafka · Spark</li><li>Docker</li></ul></div>
+      <div><h3>Frameworks &amp; data</h3><ul><li>React · Tailwind</li><li>Node.js · Express</li><li>FastAPI · Flask</li><li>PostgreSQL · MySQL</li><li>MongoDB · DynamoDB</li><li>pandas · NumPy</li></ul></div>
+      <div><h3>Tooling</h3><ul><li>Git · Jenkins</li><li>JUnit · pytest</li><li>OpenTelemetry</li><li>New Relic · Splunk</li><li>Postman · Maven</li><li>Linux</li></ul></div>
     </div>
   </section>
 
@@ -163,20 +191,20 @@
     <h2 class="reveal">Leadership &amp; involvement</h2>
     <div class="badges">
       <article class="badge-card reveal">
-        <span class="org"><img src="assets/logos/rutgers.svg" alt="Rutgers logo" width="40" height="40"></span>
-        <div class="big">96%</div>
-        <div class="unit">pass rate · 120+ students</div>
-        <h3>Rutgers Computer Science</h3>
-        <p class="role">TA &amp; tutor, Data Structures<span class="when">Sep 2024 – now</span></p>
-        <p>I lead three weekly recitations, have tutored 100+ students one-on-one, and have answered questions for 1,000+ more on Piazza.</p>
-      </article>
-      <article class="badge-card reveal">
         <span class="org"><img src="assets/logos/stanford.svg" alt="Stanford logo" width="40" height="40"></span>
         <div class="big">150+</div>
         <div class="unit">countries · 20,000+ students</div>
         <h3>Stanford Code in Place</h3>
         <p class="role">Section Leader<span class="when">Apr 2025 – Jun 2026</span></p>
         <p>I taught a weekly section of 15 students in Stanford's global intro-to-Python program, covering fundamentals and problem-solving strategies.</p>
+      </article>
+      <article class="badge-card reveal">
+        <span class="org"><img src="assets/logos/rutgers.svg" alt="Rutgers logo" width="40" height="40"></span>
+        <div class="big">96%</div>
+        <div class="unit">pass rate · 120+ students</div>
+        <h3>Rutgers Computer Science</h3>
+        <p class="role">TA &amp; tutor, Data Structures<span class="when">Sep 2024 – now</span></p>
+        <p>I lead three weekly recitations, have tutored 100+ students one-on-one, and have answered questions for 1,000+ more on Piazza.</p>
       </article>
       <article class="badge-card reveal">
         <span class="org seal"><img src="assets/logos/rusa.png" alt="Rutgers University Student Assembly seal" width="50" height="50"></span>
@@ -187,41 +215,17 @@
         <p>Elected to represent my class in the School of Arts and Sciences. I helped pass a 24-hour library bill through student votes, and Rutgers Libraries is now putting it in place.</p>
       </article>
     </div>
-    <div class="edu reveal">
-      <div>
-        <div class="eyebrow">Base camp</div>
-        <div class="co" style="margin-top:12px"><span class="org static"><img src="assets/logos/rutgers.svg" alt="Rutgers logo" width="40" height="40"></span><h3>Rutgers University<br>Honors College</h3></div>
-        <p class="deg">B.S. Computer Science &amp; Data Science<br>Minor in Quantitative Economics</p>
-      </div>
-      <dl>
-        <dt>Class of</dt><dd>December 2027</dd>
-        <dt>GPA</dt><dd>3.9 / 4.0</dd>
-        <dt>Courses</dt><dd>Distributed Systems, Operating Systems, Machine Learning, Intro to AI, Algorithms, Linear Algebra</dd>
-        <dt>Honors</dt><dd>CS Departmental Honors, Rutgers Excellence Award, Dean's List every semester</dd>
-      </dl>
-    </div>
   </section>
 
   <section class="sec wrap" id="eagle" data-trail="Eagle Scout">
     <div class="eagle reveal">
       <div class="eagle-text">
-        <div class="eyebrow">Eagle Scout · Boy Scouts of America</div>
+        <div class="eyebrow">Eagle Scout <span class="coord">Boy Scouts of America</span></div>
         <h2>Be prepared.</h2>
         <p>Scouting is where I learned to plan ahead, lead a team, and leave every campsite better than I found it. Earning Eagle, the highest rank in Scouting, meant years of merit badges, campouts, and a service project I led from start to finish.</p>
         <a class="text-link" href="photos.html#eagle-scout">See the Scouting album →</a>
       </div>
       <div class="eagle-photos" id="eagle-photos"></div>
-    </div>
-  </section>
-
-  <section class="sec wrap" id="pack" data-trail="Pack list">
-    <div class="eyebrow reveal">Pack list</div>
-    <h2 class="reveal">What I carry</h2>
-    <div class="pack reveal">
-      <div><h3>Languages</h3><ul><li>Java</li><li>Python</li><li>Scala</li><li>TypeScript</li><li>JavaScript</li><li>C / C++</li><li>SQL</li><li>Swift</li><li>Bash · R</li></ul></div>
-      <div><h3>Cloud &amp; data</h3><ul><li>AWS Fargate · ECS</li><li>Lambda · EC2</li><li>DynamoDB · S3</li><li>EventBridge · KMS</li><li>Kafka</li><li>Spark</li><li>Docker</li></ul></div>
-      <div><h3>Frameworks</h3><ul><li>React</li><li>Node.js · Express</li><li>FastAPI · Flask</li><li>PostgreSQL</li><li>MongoDB</li><li>pandas · NumPy</li></ul></div>
-      <div><h3>Tooling</h3><ul><li>Git · Jenkins</li><li>JUnit · pytest</li><li>OpenTelemetry</li><li>New Relic · Splunk</li><li>Postman · Maven</li><li>Linux</li></ul></div>
     </div>
   </section>
 
@@ -231,16 +235,17 @@
     <div class="side">
       <a class="reveal" href="beyond.html">
         <div class="eyebrow">Beyond code</div>
-        <h3>Lifting, running, chess, and more</h3>
-        <p>What I do when I'm not at a keyboard, with live chess and running stats.</p>
+        <h3>What I do for fun</h3>
+        <p>Lifting, running, chess, music, and the hobbies I can't quit, with live stats.</p>
         <div class="peek" id="chess-peek"><span>Blitz <b data-chess="blitz">…</b></span><span>Rapid <b data-chess="rapid">…</b></span><span>Puzzles <b data-chess="tactics">…</b></span></div>
-        <span class="go">Explore →</span>
+        <span class="go">Open Beyond code →</span>
       </a>
-      <a class="reveal" href="world.html">
+      <a class="reveal" href="scrapbook.html">
         <div class="eyebrow">Scrapbook</div>
         <h3>Places I've been</h3>
-        <p>An interactive globe and photo journal of the places I've lived, worked, and wandered.</p>
-        <span class="go">Explore my world →</span>
+        <p>A live globe and photo journal of the places I've lived, worked, and wandered.</p>
+        <div class="peek" id="places-peek"><span>Places <b data-places="places">…</b></span><span>Countries <b data-places="countries">…</b></span><span>US states <b data-places="states">…</b></span></div>
+        <span class="go">Open the scrapbook →</span>
       </a>
     </div>
   </section>
@@ -265,17 +270,29 @@
   </section>
 </main>
 
-<footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span>Leave no trace · Built from scratch</span></div></footer>
+<footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span><a href="beyond.html" style="color:inherit">Next: beyond code →</a></span></div></footer>
 
 <script src="assets/site.js"></script>
 <script src="assets/chess.js"></script>
 <script src="assets/photos.js"></script>
+<script src="assets/places.js"></script>
 <script>
-  // Eagle Scout strip: first three photos from the "Eagle Scout" album, or empty frames
+  // Eagle Scout strip: up to three photos from the "Eagle Scout" album; text only until there are some
   const eagle = (window.PHOTOS || []).filter((p) => p.album === 'Eagle Scout').slice(0, 3);
-  document.getElementById('eagle-photos').innerHTML = [0, 1, 2].map((i) => eagle[i]
-    ? `<a class="frame" href="photos.html#eagle-scout"><img src="${eagle[i].src}" alt="${eagle[i].caption || 'Scouting photo'}" loading="lazy"></a>`
-    : `<div class="frame empty"><span>Photo coming soon</span></div>`).join('');
+  if (eagle.length) {
+    document.getElementById('eagle-photos').innerHTML = eagle.map((p) =>
+      `<a class="frame" href="photos.html#eagle-scout"><img src="${p.src}" alt="${p.caption || 'Scouting photo'}" loading="lazy"></a>`).join('');
+  } else {
+    document.querySelector('.eagle').classList.add('solo');
+  }
+
+  // scrapbook card: counts from the same data as the globe
+  const STATES = /^(Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming|District of Columbia)$/;
+  const places = window.PLACES || [];
+  const regions = new Set(places.map((p) => p.region));
+  const states = [...regions].filter((r) => STATES.test(r)).length;
+  const counts = { places: places.length, states, countries: regions.size - states + (states ? 1 : 0) };
+  document.querySelectorAll('[data-places]').forEach((el) => { el.textContent = counts[el.dataset.places]; });
 
   ChessLive.stats().then((s) => {
     document.querySelectorAll('[data-chess]').forEach((el) => {

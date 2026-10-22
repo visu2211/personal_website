@@ -1,4 +1,4 @@
-// GET /api/spotify: what I'm playing now, top artists and tracks (last 4 weeks), and recently played.
+// GET /api/spotify: my profile, what I'm playing now, top artists and tracks (last 4 weeks), and recently played.
 // Needs SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET and SPOTIFY_REFRESH_TOKEN in Vercel
 // (run `node scripts/connect-spotify.mjs` once to set them). Cached at the CDN for 2 minutes.
 let token = null;
@@ -35,16 +35,18 @@ const track = (t) => t && {
 export default async function handler(req, res) {
   if (!process.env.SPOTIFY_REFRESH_TOKEN) return res.status(503).json({ error: 'Spotify is not connected yet.' });
   try {
-    const [now, artists, tracks, recent] = await Promise.allSettled([
+    const [me, now, artists, tracks, recent] = await Promise.allSettled([
+      api('/me'),
       api('/me/player/currently-playing'),
       api('/me/top/artists?time_range=short_term&limit=8'),
       api('/me/top/tracks?time_range=short_term&limit=5'),
       api('/me/player/recently-played?limit=8'),
     ]);
     const val = (r) => (r.status === 'fulfilled' ? r.value : null);
-    const n = val(now);
+    const n = val(now), m = val(me);
     res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
     return res.status(200).json({
+      profile: m && { name: m.display_name || m.id, image: img(m.images), url: m.external_urls?.spotify },
       nowPlaying: n && n.is_playing && n.item ? track(n.item) : null,
       topArtists: (val(artists)?.items || []).map((a) => ({ name: a.name, image: img(a.images), url: a.external_urls?.spotify })),
       topTracks: (val(tracks)?.items || []).map(track),
