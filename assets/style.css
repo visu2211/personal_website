@@ -297,10 +297,54 @@ a.frame:hover { transform: translateY(-6px) rotate(-1deg); }
 .contact a:hover .v { color: var(--ember); }
 .copy { font: 500 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ember); background: none; border: 1px solid var(--moss); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
 .copy:hover { border-color: var(--ember); }
-.fire-svg { width: 64px; height: 64px; margin-bottom: 18px; }
-.fire-svg .f1 { animation: flame 1.6s ease-in-out infinite; transform-origin: 50% 100%; }
-.fire-svg .f2 { animation: flame 1.2s ease-in-out infinite reverse; transform-origin: 50% 100%; }
-@keyframes flame { 50% { transform: scaleY(.86) scaleX(1.06); } }
+/* campfire scene: a fire that crackles; "Grab a log" walks a log in, the fire shifts aside, and someone sits */
+.camp { position: relative; margin-top: clamp(40px, 6vw, 70px); display: grid; justify-items: center; }
+.camp-svg { width: 100%; max-width: 760px; height: auto; overflow: visible; }
+.camp-svg * { transform-box: fill-box; }
+.camp-ground { fill: url(#camp-floor); }
+.stones ellipse { fill: #2e3a35; }
+.fire-logs rect, .seat rect, .carried rect { fill: #6b4428; }
+.seat .ring { fill: #a3774f; }
+.fire-slide { transition: transform 1.4s cubic-bezier(.5, 0, .2, 1); }
+.glow { animation: glow 2.4s ease-in-out infinite; transform-origin: 50% 70%; }
+.flame { transform-origin: 50% 100%; }
+.f-out { fill: #ff7b3a; animation: flicker 1.7s ease-in-out infinite; }
+.f-mid { fill: #ffb347; animation: flicker 1.25s ease-in-out infinite reverse; }
+.f-in { fill: #ffe28a; animation: flicker .9s ease-in-out infinite; }
+.sparks circle { fill: #ffcf73; opacity: 0; animation: spark 3.1s ease-out infinite; animation-delay: var(--d); transform: translateY(-40px); }
+@keyframes flicker { 0%, 100% { transform: scale(1, 1) skewX(0); } 30% { transform: scale(1.05, .9) skewX(-3deg); } 60% { transform: scale(.96, 1.06) skewX(2.5deg); } }
+@keyframes glow { 50% { opacity: .75; transform: scale(.96); } }
+@keyframes spark { 0% { opacity: 0; transform: translate(0, -40px); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--x), -150px); } }
+.walker, .sitter, .seat { opacity: 0; }
+.walker .body, .sitter { fill: none; stroke: #d8c7a6; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+.walker circle, .sitter circle { fill: #d8c7a6; stroke: none; }
+.walker .carried rect { stroke: none; }
+.walk-in { transform: translateX(260px); }
+.seat-drop { transform: translateY(-96px); }
+.sit-down { transform: translateY(-10px); transition: transform .5s ease-out; }
+.leg { transform-origin: 50% 0; }
+/* step 1: walk in with the log, fire slides left to make room */
+.camp.walking .walker { opacity: 1; }
+.camp.walking .walk-in { transform: translateX(0); transition: transform 1.4s cubic-bezier(.3, .1, .3, 1); }
+.camp.walking .leg { animation: stride .35s ease-in-out 4 alternate; }
+.camp.walking .l2 { animation-direction: alternate-reverse; }
+.camp.walking .fire-slide { transform: translateX(-80px); }
+@keyframes stride { from { transform: rotate(14deg); } to { transform: rotate(-14deg); } }
+/* step 2: the log comes off the shoulder onto the ground */
+.camp.placed .carried { opacity: 0; }
+.camp.placed .seat { opacity: 1; }
+.camp.placed .seat-drop { transform: translateY(0); transition: transform .45s cubic-bezier(.5, 0, .75, 1.4); }
+/* step 3: sit down facing the fire */
+.camp.seated .walker { opacity: 0; transition: opacity .3s; }
+.camp.seated .sitter { opacity: 1; transition: opacity .3s; }
+.camp.seated .sit-down { transform: translateY(0); }
+.grab { margin-top: 4px; font: 500 13px var(--f-mono); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--night); background: var(--ember); border: 0; border-radius: 999px; padding: 10px 20px; cursor: pointer; box-shadow: 0 0 30px rgba(255, 123, 58, .35); transition: transform .2s, box-shadow .2s, background .3s, color .3s; }
+.grab:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(255, 123, 58, .55); }
+.grab:disabled { opacity: 0; pointer-events: none; }
+.camp.seated .grab { background: transparent; color: var(--lichen); box-shadow: none; border: 1px solid var(--moss); }
+.camp.seated .grab:hover { color: var(--ember); border-color: var(--ember); }
+.camp-note { min-height: 1.6em; margin: 6px 0 0; font-size: 14px; color: var(--lichen); text-align: center; }
 
 footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-block: 30px 40px; font-family: var(--f-mono); font-size: 12px; color: var(--lichen); }
 

@@ -251,11 +251,6 @@
   </section>
 
   <section class="campfire wrap" id="campfire" data-trail="Campfire">
-    <svg class="fire-svg reveal" viewBox="0 0 64 64" aria-hidden="true">
-      <path class="f1" d="M32 8c6 10 14 16 14 28a14 14 0 0 1-28 0c0-7 4-11 6-16 2 5 4 7 6 7-2-7 0-13 2-19Z" fill="#ff7b3a"/>
-      <path class="f2" d="M32 26c3 5 7 8 7 14a7 7 0 0 1-14 0c0-4 3-7 4-10 1 2 2 3 3 3 0-3 0-5 0-7Z" fill="#e9e48a"/>
-      <path d="M12 56l40-8M52 56 12 48" stroke="#8a5a3a" stroke-width="5" stroke-linecap="round"/>
-    </svg>
     <h2 class="reveal">Pull up a log.<br><span>Let's talk.</span></h2>
     <p class="sec-intro reveal">Recruiting, collaborating, or just want to play a game of blitz? My inbox is open.</p>
     <div class="contact reveal">
@@ -266,6 +261,60 @@
       <a href="https://linkedin.com/in/vishal-kanala" target="_blank" rel="noopener"><div class="k">LinkedIn</div><div class="v">in/vishal-kanala ↗</div></a>
       <a href="https://github.com/visu2211" target="_blank" rel="noopener"><div class="k">GitHub</div><div class="v">@visu2211 ↗</div></a>
       <a href="photos.html"><div class="k">Photos</div><div class="v">Photo album →</div></a>
+    </div>
+    <div class="camp reveal" id="camp">
+      <svg class="camp-svg" viewBox="0 0 640 250" role="img" aria-labelledby="camp-title">
+        <title id="camp-title">A crackling campfire</title>
+        <defs>
+          <radialGradient id="camp-glow" cx="50%" cy="70%" r="50%">
+            <stop offset="0" stop-color="#ff7b3a" stop-opacity=".42"/>
+            <stop offset=".55" stop-color="#ff7b3a" stop-opacity=".1"/>
+            <stop offset="1" stop-color="#ff7b3a" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="camp-floor"><stop offset="0" stop-color="#3a2a1e" stop-opacity=".7"/><stop offset="1" stop-color="#0d1512" stop-opacity="0"/></radialGradient>
+        </defs>
+        <ellipse class="camp-ground" cx="320" cy="212" rx="300" ry="20"/>
+
+        <g class="fire" transform="translate(320 212)">
+          <g class="fire-slide">
+            <ellipse class="glow" cx="0" cy="-50" rx="170" ry="120" fill="url(#camp-glow)"/>
+            <g class="stones"><ellipse cx="-62" cy="2" rx="13" ry="8"/><ellipse cx="-36" cy="7" rx="12" ry="7"/><ellipse cx="-8" cy="9" rx="13" ry="7"/><ellipse cx="22" cy="8" rx="12" ry="7"/><ellipse cx="48" cy="5" rx="12" ry="7"/><ellipse cx="68" cy="0" rx="10" ry="7"/></g>
+            <g class="fire-logs"><rect x="-58" y="-12" width="116" height="15" rx="7.5" transform="rotate(14)"/><rect x="-58" y="-12" width="116" height="15" rx="7.5" transform="rotate(-14)"/></g>
+            <path class="flame f-out" d="M0-118C16-88 44-70 40-34 37-8 20 0 0 0S-38-8-40-34C-42-60-22-74-14-96-8-80-3-74 4-72 2-88-3-102 0-118Z"/>
+            <path class="flame f-mid" d="M2-84C14-62 29-50 27-26 25-7 13 0 0 0S-27-7-27-26C-27-43-15-52-9-67-5-56-1-52 4-52 3-62 0-72 2-84Z"/>
+            <path class="flame f-in" d="M0-50C8-37 15-29 14-16 13-5 7 0 0 0S-14-5-14-16C-14-27-7-33 0-50Z"/>
+            <g class="sparks"><circle r="2" style="--x:-14px;--d:0s"/><circle r="1.6" style="--x:10px;--d:.5s"/><circle r="1.8" style="--x:-4px;--d:1.1s"/><circle r="1.4" style="--x:18px;--d:1.6s"/><circle r="1.7" style="--x:-20px;--d:2.1s"/><circle r="1.3" style="--x:6px;--d:2.6s"/></g>
+          </g>
+        </g>
+
+        <!-- the seat: a log rolled up beside the fire -->
+        <g class="seat" transform="translate(400 212)">
+          <g class="seat-drop"><rect x="-44" y="-20" width="88" height="20" rx="10"/><ellipse class="ring" cx="-38" cy="-10" rx="6" ry="9.5"/></g>
+        </g>
+
+        <!-- someone carrying the log in, then sitting on it facing the fire -->
+        <g class="walker" transform="translate(440 212)">
+          <g class="walk-in">
+            <g class="body">
+              <g class="carried"><rect x="-14" y="-114" width="82" height="17" rx="8.5" transform="rotate(-12 0 -106)"/></g>
+              <circle cx="0" cy="-121" r="11"/>
+              <path d="M0-106V-62"/>
+              <path class="leg l1" d="M0-62 -6 0"/><path class="leg l2" d="M0-62 6 0"/>
+              <path d="M0-98 6-110"/>
+            </g>
+          </g>
+        </g>
+        <g class="sitter" transform="translate(404 192)">
+          <g class="sit-down">
+            <circle cx="-18" cy="-74" r="11"/>
+            <path d="M0 0-12-58"/>
+            <path d="M0 0H-34L-38 20M-4 0H-30L-30 20"/>
+            <path d="M-11-50-42-30"/>
+          </g>
+        </g>
+      </svg>
+      <button class="grab" id="grab" type="button">Grab a log</button>
+      <p class="camp-note" id="camp-note" aria-live="polite"></p>
     </div>
   </section>
 </main>
@@ -293,6 +342,21 @@
   const states = [...regions].filter((r) => STATES.test(r)).length;
   const counts = { places: places.length, states, countries: regions.size - states + (states ? 1 : 0) };
   document.querySelectorAll('[data-places]').forEach((el) => { el.textContent = counts[el.dataset.places]; });
+
+  // campfire: "Grab a log" carries a log in, nudges the fire aside, and sits down by it
+  (() => {
+    const camp = document.getElementById('camp'), btn = document.getElementById('grab'), note = document.getElementById('camp-note');
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const steps = [['walking', 0], ['placed', 1500], ['seated', 2100]];
+    btn.addEventListener('click', () => {
+      if (camp.classList.contains('seated')) {
+        camp.classList.remove('walking', 'placed', 'seated'); btn.textContent = 'Grab a log'; note.textContent = ''; return;
+      }
+      btn.disabled = true;
+      steps.forEach(([cls, t]) => setTimeout(() => camp.classList.add(cls), still ? 0 : t));
+      setTimeout(() => { btn.disabled = false; btn.textContent = 'Put it back'; note.textContent = 'Seat saved. Say hi whenever you like.'; }, still ? 0 : 2700);
+    });
+  })();
 
   ChessLive.stats().then((s) => {
     document.querySelectorAll('[data-chess]').forEach((el) => {
