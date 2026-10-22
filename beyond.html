@@ -67,6 +67,38 @@
   .chess-foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 16px 24px; border-top: 1px solid var(--moss); font-size: 13px; color: var(--lichen); }
   .chess-foot a { color: var(--ember); text-decoration: none; font-weight: 500; }
 
+  /* music */
+  .music { margin-top: 36px; display: grid; gap: 26px; padding: 24px; border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); }
+  .np { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 14px; background: var(--night); border: 1px solid var(--moss); min-width: 0; text-decoration: none; }
+  a.np:hover { border-color: var(--ember); }
+  .np-art { width: 64px; height: 64px; flex: none; border-radius: 10px; background: var(--moss) center / cover no-repeat; }
+  .np-text { display: grid; gap: 2px; min-width: 0; }
+  .np-label { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--lichen); }
+  .np-label.on { color: var(--win); }
+  .np-text b { font-size: 17px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .np-text small { color: var(--lichen); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .eq { margin-left: auto; display: flex; align-items: flex-end; gap: 3px; height: 22px; }
+  .eq i { width: 4px; background: var(--win); border-radius: 2px; animation: eq 1s ease-in-out infinite; }
+  .eq i:nth-child(2) { animation-delay: .2s; } .eq i:nth-child(3) { animation-delay: .4s; } .eq i:nth-child(4) { animation-delay: .1s; }
+  @keyframes eq { 0%, 100% { height: 5px; } 50% { height: 22px; } }
+  .music-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; }
+  .artists { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .artists a { display: grid; gap: 8px; justify-items: center; text-align: center; text-decoration: none; min-width: 0; }
+  .artists span { width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--moss) center / cover no-repeat; transition: transform .3s; }
+  .artists a:hover span { transform: scale(1.05); }
+  .artists b { font-size: 13px; font-weight: 600; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tracks, .recent { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .tracks a, .recent a { display: grid; grid-template-columns: auto 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 7px 8px; border-radius: 10px; text-decoration: none; }
+  .tracks a:hover, .recent a:hover { background: var(--night); }
+  .tracks .n { font-family: var(--f-mono); font-size: 12px; color: var(--ember); width: 18px; }
+  .tracks .art, .recent .art { width: 40px; height: 40px; border-radius: 6px; background: var(--moss) center / cover no-repeat; }
+  .tracks .t, .recent .t { display: grid; min-width: 0; }
+  .tracks .t b, .recent .t b { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tracks .t small, .recent .t small { font-size: 12.5px; color: var(--lichen); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .recent { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
+  .recent a { grid-template-columns: 40px minmax(0, 1fr) auto; }
+  .recent .ago { font-family: var(--f-mono); font-size: 11px; color: var(--lichen); white-space: nowrap; }
+  .music.offline .music-grid, .music.offline .recent, .music.offline .tlabel { display: none; }
   /* training */
   .train { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
   .tpanel { border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); padding: 22px 24px; display: flex; flex-direction: column; gap: 20px; min-width: 0; scroll-margin-top: 80px; }
@@ -175,6 +207,8 @@
 
   @media (max-width: 860px) {
     .train { grid-template-columns: minmax(0, 1fr); }
+    .music-grid { grid-template-columns: minmax(0, 1fr); }
+    .recent { grid-template-columns: minmax(0, 1fr); }
     .chess-body { grid-template-columns: minmax(0, 1fr); }
     .rating { border-right: 0; border-bottom: 1px solid var(--moss); }
     .hobbies { grid-template-columns: minmax(0, 1fr); }
@@ -220,6 +254,7 @@
     <p class="lede rise" style="--i:2">Gym time, miles on the road, court time, and a lot of chess. Here's the stuff that keeps me sane.</p>
     <nav class="hobby-index rise" style="--i:3" aria-label="Hobbies">
       <a href="#chess"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M9 18h6l1-3H8l1 3ZM10 15l-1-5h6l-1 5M12 3v4M10 5h4M9 10h6"/></svg>Chess</a>
+      <a href="#music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-1 6.5-.7 9 .8M8 12.6c2.4-.7 5.2-.4 7.2.7M8.6 15.4c1.9-.5 3.9-.3 5.5.5"/></svg>Music</a>
       <a href="#training"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>Lifting</a>
       <a href="#running"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="15" cy="4.5" r="2"/><path d="m6 21 3-6 3 2v4M9 15l1.5-5L14 8l2 4 3 1M10.5 10 7 11l-2 3"/></svg>Running</a>
       <a href="#volleyball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3c-1 5 1 9 6 12M3.5 9c5-1 9 1 11 6.5M8 20c1-5 4-8 12-8"/></svg>Volleyball</a>
@@ -277,6 +312,25 @@
         <span id="chess-updated">Data from the chess.com public API</span>
         <a href="https://www.chess.com/member/visu22" target="_blank" rel="noopener">Challenge me on chess.com ↗</a>
       </div>
+    </div>
+  </section>
+
+  <section class="sec" id="music" data-trail="Music">
+    <div class="eyebrow reveal">Listening · Spotify</div>
+    <h2 class="reveal">On repeat</h2>
+    <p class="sec-intro reveal">What I've had on lately, straight from my Spotify.</p>
+    <div class="music reveal" id="music-card">
+      <div class="np" id="np">
+        <div class="np-art" id="np-art"></div>
+        <div class="np-text"><span class="np-label" id="np-label">Connecting to Spotify…</span><b id="np-title"></b><small id="np-artist"></small></div>
+        <span class="eq" id="np-eq" aria-hidden="true" hidden><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div class="music-grid">
+        <div><div class="tlabel">Top artists · last 4 weeks</div><div class="artists" id="top-artists"></div></div>
+        <div><div class="tlabel">Top tracks · last 4 weeks</div><ol class="tracks" id="top-tracks"></ol></div>
+      </div>
+      <div><div class="tlabel">Recently played</div><ol class="recent" id="recent-tracks"></ol></div>
+      <div class="tfoot" id="music-foot">Live from Spotify</div>
     </div>
   </section>
 
@@ -425,7 +479,7 @@
   function renderGames() {
     const list = $('game-list');
     if (!G.length) { list.innerHTML = '<li style="padding:10px 12px;color:var(--lichen)">Recent games are unavailable right now.</li>'; return; }
-    list.innerHTML = G.slice(0, 8).map((g) => `
+    list.innerHTML = G.slice(0, 5).map((g) => `
       <li><a href="${g.url}" target="_blank" rel="noopener">
         <span class="res ${g.result}" aria-label="${{ W: 'Win', L: 'Loss', D: 'Draw' }[g.result]}">${g.result}</span>
         <span class="opp"><span class="pc ${g.color}" title="Played ${g.color}"></span>vs ${g.opp} <small>(${g.oppRating})</small></span>
@@ -482,6 +536,35 @@
 
   // join a title's last two words when the last one is short, so "Spider-Man 2" or "Ops III" wrap together
   const keepTogether = (t) => t.replace(/ (\S{1,4})$/, '\u00A0$1');
+
+
+  /* ---------- Spotify (served by /api/spotify on Vercel) ---------- */
+  (async () => {
+    const card = $('music-card');
+    const ago = (iso) => { const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? `${Math.max(1, m)}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`; };
+    const bg = (u) => (u ? `background-image:url('${esc(u)}')` : '');
+    try {
+      const r = await fetch('/api/spotify');
+      if (!r.ok) throw new Error(r.status);
+      const d = await r.json();
+      const np = d.nowPlaying, last = d.recent?.[0];
+      const show = np || last;
+      $('np-label').textContent = np ? 'Now playing' : last ? `Last played · ${ago(last.playedAt)}` : 'Nothing playing';
+      $('np-label').classList.toggle('on', !!np); $('np-eq').hidden = !np;
+      if (show) {
+        $('np-title').textContent = show.name; $('np-artist').textContent = show.artists; $('np-art').style.cssText = bg(show.image);
+        if (show.url) { const a = document.createElement('a'); a.className = 'np'; a.id = 'np'; a.href = show.url; a.target = '_blank'; a.rel = 'noopener'; a.append(...$('np').childNodes); $('np').replaceWith(a); }
+      }
+      $('top-artists').innerHTML = d.topArtists.map((a) => `<a href="${esc(a.url)}" target="_blank" rel="noopener"><span style="${bg(a.image)}"></span><b>${esc(a.name)}</b></a>`).join('');
+      $('top-tracks').innerHTML = d.topTracks.map((t, i) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="art" style="${bg(t.image)}"></span><span class="t"><b>${esc(t.name)}</b><small>${esc(t.artists)}</small></span><span></span></a></li>`).join('');
+      $('recent-tracks').innerHTML = d.recent.slice(0, 6).map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener"><span class="art" style="${bg(t.image)}"></span><span class="t"><b>${esc(t.name)}</b><small>${esc(t.artists)}</small></span><span class="ago">${ago(t.playedAt)}</span></a></li>`).join('');
+      $('music-foot').textContent = 'Live from Spotify · refreshes every couple of minutes';
+    } catch {
+      card.classList.add('offline');
+      $('np-label').textContent = 'Spotify is offline right now';
+      $('music-foot').textContent = '';
+    }
+  })();
 
   /* ---------- PS5 activity (served by /api/psn on Vercel) ---------- */
   (async () => {

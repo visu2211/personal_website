@@ -33,6 +33,13 @@ when the card shows "Offline", get a new one and replace it.
 2. Sign in at https://www.playstation.com, then open https://ca.account.sony.com/api/v1/ssocookie in the same browser.
 3. Copy the 64-character `npsso` value and add it in Vercel as `PSN_NPSSO` (Production), then redeploy.
 
+## Spotify (live, Listening section)
+`api/spotify.js` returns what you're playing now, your top artists and tracks from the last 4 weeks, and recently played,
+cached for 2 minutes. It needs `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` and `SPOTIFY_REFRESH_TOKEN` in Vercel.
+1. https://developer.spotify.com/dashboard › Create app. Redirect URI: `http://127.0.0.1:8724/callback`, API: Web API.
+2. Run `node scripts/connect-spotify.mjs`, paste the Client ID and Secret, and click Agree in the browser.
+   The script saves all three variables to Vercel and offers to redeploy.
+
 ## Adding photos
 - Headshot: `photos/headshot.jpg` (square).
 - Album photos: put files in `photos/` and add a line per photo in `assets/photos.js`.
