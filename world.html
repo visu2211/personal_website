@@ -25,7 +25,7 @@
   .legend { top: calc(env(safe-area-inset-top, 0px) + 22px); right: var(--gutter); display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-end;
     font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--lichen); }
   .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; box-shadow: 0 0 8px currentColor; }
-  .title { left: var(--gutter); bottom: calc(env(safe-area-inset-bottom, 0px) + 120px); }
+  .title { left: var(--gutter); bottom: calc(env(safe-area-inset-bottom, 0px) + 52px + var(--chips-h, 70px)); }
   .title .eyebrow { margin-bottom: 8px; }
   .title h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(44px, 6.4vw, 84px); line-height: .95; letter-spacing: -.01em; color: #f2f2f2; }
   .title .eyebrow { color: #8b8f94; }
@@ -127,6 +127,9 @@
   /* ---------- place chips ---------- */
   $('chips').innerHTML = places.map((p, i) => `<button type="button" data-i="${i}" aria-pressed="false"><i style="background:${KCOL[KIND(p)]}"></i>${esc(p.name)}</button>`).join('');
   $('chips').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) select(+b.dataset.i); });
+  // keep the title above the place buttons however many rows they wrap to
+  const fitTitle = () => document.documentElement.style.setProperty('--chips-h', $('chips').offsetHeight + 'px');
+  fitTitle(); addEventListener('resize', fitTitle);
 
   if (typeof Globe !== 'function') { $('loading').textContent = 'The globe could not load. Check your connection and refresh.'; return; }
   $('loading').remove();
