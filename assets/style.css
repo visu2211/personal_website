@@ -30,6 +30,7 @@ body {
 }
 a { color: inherit; }
 img { max-width: 100%; display: block; }
+[hidden] { display: none !important; }   /* hidden always wins over a component's display rule */
 :focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; border-radius: 3px; }
 ::selection { background: var(--ember); color: var(--night); }
 
@@ -472,6 +473,9 @@ h1, h2, h3, .lede, .eyebrow, .tlabel { text-wrap: balance; }
 .cmdk-chip:hover { color: var(--bone); border-color: color-mix(in srgb, var(--ember) 55%, var(--moss)); }
 .cmdk-chip kbd, .cmdk kbd { font: 11px var(--f-mono); letter-spacing: .04em; color: inherit; padding: 2px 6px; border: 1px solid var(--moss); border-radius: 5px; background: var(--night); }
 html.cmdk-open { overflow: hidden; }
+/* closed menu must take no space and catch no clicks (display: grid below would otherwise beat the hidden attribute) */
+.cmdk[hidden] { display: none; }
+.cmdk:not(.on) { pointer-events: none; }
 .cmdk { position: fixed; inset: 0; z-index: 100; display: grid; justify-items: center; align-items: start; padding: clamp(60px, 12vh, 130px) 16px 24px; }
 .cmdk-scrim { position: absolute; inset: 0; background: rgba(6, 10, 9, .62); backdrop-filter: blur(6px); opacity: 0; transition: opacity .16s; }
 .cmdk-box { position: relative; width: min(640px, 100%); max-height: min(560px, 100%); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden;
