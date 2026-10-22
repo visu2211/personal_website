@@ -336,6 +336,7 @@
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span><a href="beyond.html" style="color:inherit">Next: beyond code →</a></span></div></footer>
 
 <script src="assets/site.js"></script>
+<script src="assets/palette.js"></script>
 <script src="assets/chess.js"></script>
 <script src="assets/photos.js"></script>
 <script src="assets/places.js"></script>
@@ -383,6 +384,11 @@
       camp.classList.remove('toppled', 'cleared', 'walking', 'placed', 'seated');
       note.textContent = ''; reset.hidden = true; btn.focus();
     });
+    // arriving from the command menu on another page: walk down to the fire and pull up a log
+    if (location.hash === '#pull-up') {
+      history.replaceState(null, '', location.pathname);
+      setTimeout(() => { document.getElementById('campfire').scrollIntoView({ behavior: 'smooth' }); setTimeout(() => btn.click(), 900); }, 300);
+    }
   })();
 
   ChessLive.stats().then((s) => {

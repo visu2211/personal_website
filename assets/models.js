@@ -277,51 +277,51 @@ function buildController() {
 // Red, white and blue panels that swirl around the ball, dark seams between them, and a honeycomb
 // surface texture. Painted into an equirectangular canvas and wrapped on a sphere.
 function buildVolleyball() {
+  // Molten FLISTATEC look: equal-width navy, white and red-orange bands in a deep S-swirl, honeycomb all over
   const W = 2048, H = 1024;
   const color = document.createElement('canvas'); color.width = W; color.height = H;
   const bump = document.createElement('canvas'); bump.width = W; bump.height = H;
   const cx = color.getContext('2d'), bx = bump.getContext('2d');
   const img = cx.createImageData(W, H), d = img.data;
   const seam = new Uint8Array(W * H);
-  // one lap around the ball: white, red, white, blue, twice (widths in fractions of a lap)
-  const bands = [['#f3f2ee', 0.16], ['#d32638', 0.07], ['#1f3c9e', 0.06], ['#f3f2ee', 0.13], ['#1f3c9e', 0.06], ['#d32638', 0.07]];
+  // one lap around the ball: navy, white, red, twice
+  const bands = [['#1e2a8c', 1], ['#f4f3ef', 1], ['#e0341c', 1], ['#1e2a8c', 1], ['#f4f3ef', 1], ['#e0341c', 1]];
   const rgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
   const stops = []; let acc = 0; for (const [c, w] of bands) { stops.push([acc, rgb(c)]); acc += w; }
   const lap = acc;
   for (let y = 0; y < H; y++) {
     const lat = (0.5 - y / H) * Math.PI;                       // +π/2 top … −π/2 bottom
-    // swirl: the bands twist with latitude, an S-curve like the Molten panels
-    const twist = 2.4 * Math.sin(lat * 2.1) + 0.5 * lat;
+    // the bands sweep one way above the equator and back below it, the Molten S-curve
+    const twist = 1.5 * Math.sin(lat * 2);
     for (let x = 0; x < W; x++) {
       const lon = (x / W) * Math.PI * 2;
-      let t = (((lon + twist) / (Math.PI * 2)) % 1 + 1) % 1 * lap;
+      const t = (((lon + twist) / (Math.PI * 2)) % 1 + 1) % 1 * lap;
       let k = 0; while (k + 1 < stops.length && stops[k + 1][0] <= t) k++;
       const next = k + 1 < stops.length ? stops[k + 1][0] : lap;
       const edge = Math.min(t - stops[k][0], next - t) * (Math.PI * 2 / lap) * Math.cos(lat);   // distance to a seam
       let [r, g, b] = stops[k][1];
-      // fine section lines: every panel edge, plus a line down the middle of each wide white panel
-      const w = next - stops[k][0];
-      const mid = w > 0.1 ? Math.abs(t - (stops[k][0] + w / 2)) * (Math.PI * 2 / lap) * Math.cos(lat) : 1;
-      const line = Math.min(edge, mid);
-      if (line < 0.0035) { const f = 0.42 + (line / 0.0035) * 0.25; r *= f; g *= f; b *= f; seam[y * W + x] = 1; }
+      if (edge < 0.012) { const f = 0.5 + (edge / 0.012) * 0.5; r *= f; g *= f; b *= f; if (edge < 0.006) seam[y * W + x] = 1; }
       const i = (y * W + x) * 4; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255;
     }
   }
   cx.putImageData(img, 0, 0);
-  // honeycomb bump: thin raised hex lines (stretched toward the poles, which the eye barely sees on a spinning ball)
-  bx.fillStyle = '#808080'; bx.fillRect(0, 0, W, H);
-  bx.strokeStyle = '#5a5a5a'; bx.lineWidth = 2;
-  const R = 9, hw = Math.sqrt(3) * R;
-  for (let row = 0, y = 0; y < H + R; row++, y += R * 1.5) {
-    for (let x = (row % 2) * hw / 2; x < W + hw; x += hw) {
-      bx.beginPath();
-      for (let k = 0; k < 6; k++) { const a = Math.PI / 6 + (k * Math.PI) / 3; bx.lineTo(x + R * Math.cos(a), y + R * Math.sin(a)); }
-      bx.closePath(); bx.stroke();
+  // honeycomb, drawn faintly into the color and as raised ridges in the bump map
+  const hexes = (ctx, R) => {
+    const hw = Math.sqrt(3) * R;
+    for (let row = 0, y = 0; y < H + R; row++, y += R * 1.5) {
+      for (let x = (row % 2) * hw / 2; x < W + hw; x += hw) {
+        ctx.beginPath();
+        for (let k = 0; k < 6; k++) { const a = Math.PI / 6 + (k * Math.PI) / 3; ctx.lineTo(x + R * Math.cos(a), y + R * Math.sin(a)); }
+        ctx.closePath(); ctx.stroke();
+      }
     }
-  }
-  // press the section lines into the surface
+  };
+  cx.strokeStyle = 'rgba(0, 0, 0, 0.16)'; cx.lineWidth = 1.6; hexes(cx, 13);
+  bx.fillStyle = '#808080'; bx.fillRect(0, 0, W, H);
+  bx.strokeStyle = '#4e4e4e'; bx.lineWidth = 2.4; hexes(bx, 13);
+  // press the panel seams into the surface
   const bd = bx.getImageData(0, 0, W, H);
-  for (let i = 0; i < W * H; i++) if (seam[i]) { const j = i * 4; bd.data[j] = bd.data[j + 1] = bd.data[j + 2] = 20; }
+  for (let i = 0; i < W * H; i++) if (seam[i]) { const j = i * 4; bd.data[j] = bd.data[j + 1] = bd.data[j + 2] = 16; }
   bx.putImageData(bd, 0, 0);
   const map = new THREE.CanvasTexture(color); map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 8;
   const bumpMap = new THREE.CanvasTexture(bump);
