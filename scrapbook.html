@@ -394,7 +394,7 @@
         .arcStroke(0.45).arcAltitudeAutoScale(0.35).arcDashLength(0.45).arcDashGap(0.25).arcDashAnimateTime(2600)
         .pointOfView({ lat: 30, lng: -40, altitude: 2.6 });
       world.globeMaterial().color.set('#6f84a6'); // dimmed so the lights stay in the background
-      dayNight(world, { day: innerWidth > 760 ? 'assets/globe/earth-day-8k.jpg' : 'assets/globe/earth-day.jpg', nightGain: 0.6, dayGain: 0.95 });  // real-time day and night
+      dayNight(world, { day: innerWidth > 760 ? 'assets/globe/earth-day-8k.jpg' : 'assets/globe/earth-day.jpg', nightGain: 1.25, dayGain: 0.95 });  // real-time day and night
       window.__globe = world;
 
   // selected place label: positioned each frame from the globe's projection, so it stays attached and uses the site font

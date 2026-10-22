@@ -184,7 +184,7 @@
   // brighter, blue-tinted night globe with soft shading
   const mat = world.globeMaterial();
   mat.color.set('#6f84a6'); mat.emissive.set('#0a1a36'); mat.emissiveIntensity = 0.5; mat.shininess = 4; // dimmed so the lights stay in the background
-  dayNight(world, { day: innerWidth > 760 ? 'assets/globe/earth-day-8k.jpg' : 'assets/globe/earth-day.jpg', nightGain: 0.6, dayGain: 0.95 });  // real-time day and night
+  dayNight(world, { day: innerWidth > 760 ? 'assets/globe/earth-day-8k.jpg' : 'assets/globe/earth-day.jpg', nightGain: 1.25, dayGain: 0.95 });  // real-time day and night
   window.__globe = world;
 
   // selected place label: positioned each frame from the globe's projection, so it stays attached and uses the site font

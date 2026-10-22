@@ -52,8 +52,10 @@ window.dayNight = function dayNight(world, { day, nightGain = 1.0, dayGain = 1.0
           .replace('#include <dithering_fragment>', `#include <dithering_fragment>
             float sunDot = dot(normalize(vWorldNormalDN), normalize(sunDir));
             float dayAmt = smoothstep(-0.08, 0.16, sunDot);                 // soft terminator
-            vec3 dayCol = texture2D(dayMap, vMapUv).rgb * dayGain * (0.55 + 0.45 * clamp(sunDot * 1.6, 0.0, 1.0));
-            vec3 nightCol = texture2D(map, vMapUv).rgb * nightGain;
+            vec3 dayTex = texture2D(dayMap, vMapUv).rgb;
+            vec3 dayCol = dayTex * dayGain * (0.55 + 0.45 * clamp(sunDot * 1.6, 0.0, 1.0));
+            // night side: city lights plus a faint moonlit view of the land and oceans so it never goes black
+            vec3 nightCol = texture2D(map, vMapUv).rgb * nightGain + dayTex * vec3(0.3, 0.36, 0.5);
             vec3 dusk = vec3(1.0, 0.45, 0.2) * 0.12 * (1.0 - abs(dayAmt * 2.0 - 1.0));   // warm glow along the sunset line
             gl_FragColor = vec4(mix(nightCol, dayCol, dayAmt) + dusk, 1.0);`);
       };
