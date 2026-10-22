@@ -40,7 +40,7 @@ export default async function handler(req, res) {
       api('/me/player/currently-playing'),
       api('/me/top/artists?time_range=short_term&limit=8'),
       api('/me/top/tracks?time_range=short_term&limit=5'),
-      api('/me/player/recently-played?limit=8'),
+      api('/me/player/recently-played?limit=50'),
     ]);
     const val = (r) => (r.status === 'fulfilled' ? r.value : null);
     const n = val(now), m = val(me);
@@ -50,7 +50,11 @@ export default async function handler(req, res) {
       nowPlaying: n && n.is_playing && n.item ? track(n.item) : null,
       topArtists: (val(artists)?.items || []).map((a) => ({ name: a.name, image: img(a.images), url: a.external_urls?.spotify })),
       topTracks: (val(tracks)?.items || []).map(track),
-      recent: (val(recent)?.items || []).map((i) => ({ ...track(i.track), playedAt: i.played_at })),
+      // newest play of each song only, so a track on repeat shows up once
+      recent: (val(recent)?.items || [])
+        .filter((i, k, all) => all.findIndex((j) => j.track.id === i.track.id) === k)
+        .slice(0, 8)
+        .map((i) => ({ ...track(i.track), playedAt: i.played_at })),
     });
   } catch {
     token = null;
