@@ -111,7 +111,7 @@
 </div>
 <aside class="ui card" id="card" hidden aria-live="polite"></aside>
 <nav class="ui chips" id="chips" aria-label="Places"></nav>
-<div class="ui credit">Earth at night: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>, CC BY 4.0</div>
+<div class="ui credit">Earth textures: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>, CC BY 4.0</div>
 
 <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
   <img id="lb-img" alt="">
@@ -120,6 +120,7 @@
 
 <script src="assets/places.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/globe.gl@2.46.2/dist/globe.gl.min.js"></script>
+<script src="assets/daynight.js"></script>
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
@@ -183,6 +184,7 @@
   // brighter, blue-tinted night globe with soft shading
   const mat = world.globeMaterial();
   mat.color.set('#6f84a6'); mat.emissive.set('#0a1a36'); mat.emissiveIntensity = 0.5; mat.shininess = 4; // dimmed so the lights stay in the background
+  dayNight(world, { day: innerWidth > 760 ? 'assets/globe/earth-day-8k.jpg' : 'assets/globe/earth-day.jpg', nightGain: 0.6, dayGain: 0.95 });  // real-time day and night
   window.__globe = world;
 
   // selected place label: positioned each frame from the globe's projection, so it stays attached and uses the site font

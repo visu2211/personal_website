@@ -163,7 +163,7 @@
         <span><i style="background:var(--k-home)"></i>Home</span><span><i style="background:var(--k-school)"></i>School</span>
         <span><i style="background:var(--k-work)"></i>Work</span><span><i style="background:var(--k-visited)"></i>Visited</span>
       </div>
-      <div class="globe-credit">Earth at night: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>, CC BY 4.0</div>
+      <div class="globe-credit">Earth textures: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>, CC BY 4.0</div>
       <div class="globe-hint" id="globe-hint">Drag to spin · tap a place</div>
       <aside class="place-card" id="place-card" hidden aria-live="polite"></aside>
       <div class="map globe-fallback" id="globe-fallback" hidden>
@@ -196,6 +196,7 @@
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span><a href="index.html" style="color:inherit">← Back to the trailhead</a></span></div></footer>
 
 <script src="assets/places.js"></script>
+<script src="assets/daynight.js"></script>
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
@@ -393,6 +394,7 @@
         .arcStroke(0.45).arcAltitudeAutoScale(0.35).arcDashLength(0.45).arcDashGap(0.25).arcDashAnimateTime(2600)
         .pointOfView({ lat: 30, lng: -40, altitude: 2.6 });
       world.globeMaterial().color.set('#6f84a6'); // dimmed so the lights stay in the background
+      dayNight(world, { day: innerWidth > 760 ? 'assets/globe/earth-day-8k.jpg' : 'assets/globe/earth-day.jpg', nightGain: 0.6, dayGain: 0.95 });  // real-time day and night
       window.__globe = world;
 
   // selected place label: positioned each frame from the globe's projection, so it stays attached and uses the site font
