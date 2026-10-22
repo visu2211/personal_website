@@ -3,7 +3,7 @@
 (() => {
   const EMAIL = 'vkanala22@gmail.com';
   const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
-  const page = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '') || 'index';
+  const page = location.pathname.split('/').pop().replace(/\.html$/, '') || 'index';   // '/' and '/index' are both home
   const here = (p) => page === p || (p === 'index' && page === '');
 
   const I = {
@@ -40,7 +40,7 @@
     const pages = [['index', 'Work', 'home résumé experience projects'], ['beyond', 'Beyond code', 'hobbies chess spotify music lifting running volleyball motorcycle ps5'],
       ['scrapbook', 'Scrapbook', 'places travel trips journal'], ['world', 'World globe', 'map places travel'], ['photos', 'Photo album', 'pictures eagle scout']];
     pages.filter(([p]) => !here(p)).forEach(([p, name, keys]) =>
-      add('Pages', name, p === 'world' ? 'globe' : 'page', () => { location.href = `${p}.html`; }, { keys }));
+      add('Pages', name, p === 'world' ? 'globe' : 'page', () => { location.href = p === 'index' ? '/' : `/${p}`; }, { keys }));
 
     add('Open', 'LinkedIn', 'out', () => open('https://linkedin.com/in/vishal-kanala'), { hint: 'new tab', keys: 'linkedin profile' });
     add('Open', 'GitHub', 'out', () => open('https://github.com/visu2211'), { hint: 'new tab', keys: 'code repos' });
@@ -58,9 +58,9 @@
 
     add('Fun', 'Pull up a log by the fire', 'fire', () => {
       if (here('index')) { const g = document.getElementById('grab'); goTo(document.getElementById('campfire')); setTimeout(() => g && !g.closest('.toppled') && g.click(), 700); }
-      else location.href = 'index.html#pull-up';
+      else location.href = '/#pull-up';
     }, { keys: 'campfire talk contact' });
-    add('Fun', 'Spin the globe', 'globe', () => { location.href = 'world.html'; }, { keys: 'world map' });
+    add('Fun', 'Spin the globe', 'globe', () => { location.href = '/world'; }, { keys: 'world map' });
     return list;
   }
 

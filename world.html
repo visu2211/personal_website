@@ -97,7 +97,7 @@
 <div id="globe" role="img" aria-label="Interactive spinning globe of the places that shaped me"></div>
 <div class="ui loading" id="loading">Loading the world…</div>
 
-<div class="ui back"><a href="scrapbook.html">← Back</a></div>
+<div class="ui back"><a href="/scrapbook">← Back</a></div>
 <div class="ui legend" aria-hidden="true">
   <span><i style="background:var(--k-home);color:var(--k-home)"></i>Home</span>
   <span><i style="background:var(--k-school);color:var(--k-school)"></i>School</span>
@@ -242,7 +242,7 @@
       <div class="meta">${esc(p.region)} · ${deg(p.lat, 'N', 'S')}, ${deg(p.lng, 'E', 'W')}${p.date ? ' · ' + esc(when(p.date)) : ''}</div>
       ${p.note ? `<p>${esc(p.note)}</p>` : ''}
       <div class="strip">${strip}</div>
-      <div class="foot"><span class="mono" style="color:var(--lichen);font-size:12px">${n ? n + ' photo' + (n > 1 ? 's' : '') : ''}</span><a href="scrapbook.html#journal">Open the journal →</a></div>`;
+      <div class="foot"><span class="mono" style="color:var(--lichen);font-size:12px">${n ? n + ' photo' + (n > 1 ? 's' : '') : ''}</span><a href="/scrapbook#journal">Open the journal →</a></div>`;
     $('card').hidden = false;
     SEL.p = p; world.pointRadius((q) => (q === SEL.p ? 1.35 : 1) * SEL.r).ringsData([p]);
     world.pointOfView({ lat: p.lat - (innerWidth < 760 ? 3 : 0.6), lng: p.lng + (innerWidth < 760 ? 0 : 3), altitude: 0.5 }, 1800);
