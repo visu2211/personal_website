@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=20261022">
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
 <style>
   .page-head { padding-block: clamp(60px, 10vw, 120px) 0; }
@@ -448,9 +448,9 @@
 
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span class="credits">Controller model: <a href="https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936" target="_blank" rel="noopener">“Playstation 5 Dualsense”</a> by AHarmlessPotato, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span><span><a href="/scrapbook" style="color:inherit">Next: the scrapbook →</a></span></div></footer>
 
-<script src="assets/site.js"></script>
-<script src="assets/palette.js"></script>
-<script src="assets/chess.js"></script>
+<script src="assets/site.js?v=20261022"></script>
+<script src="assets/palette.js?v=20261022"></script>
+<script src="assets/chess.js?v=20261022"></script>
 <script src="assets/hevy-data.js"></script>
 <script src="assets/strava-data.js"></script>
 <script>
@@ -697,7 +697,7 @@
     if (!e.isIntersecting) return; io.unobserve(e.target);
     const canvas = e.target, stage = canvas.parentElement, loading = stage.querySelector('.bike-loading');
     try {
-      const { mountModel } = await import('./assets/models.js');
+      const { mountModel } = await import('./assets/models.js?v=20261022');
       const m = await mountModel(canvas, canvas.dataset.model);
       loading?.remove();
       const rb = stage.querySelector('[data-reset]'); if (rb) { rb.hidden = false; rb.addEventListener('click', m.reset); }
