@@ -65,7 +65,14 @@ async function main() {
     body: new URLSearchParams({ grant_type: 'authorization_code', code, redirect_uri: REDIRECT }),
   });
   const tok = await r.json();
-  if (!r.ok || !tok.refresh_token) throw new Error(`Spotify did not return a token (${r.status}). Check the Client ID, Secret, and Redirect URI.`);
+  if (!r.ok || !tok.refresh_token) {
+    // Spotify's own reason, e.g. invalid_client (wrong ID or secret) or invalid_grant (redirect URI mismatch, or the code expired)
+    const why = [tok.error, tok.error_description].filter(Boolean).join(': ') || 'no details';
+    const hint = tok.error === 'invalid_client' ? 'The Client ID or Secret is wrong. Copy both again from the app\'s Settings page.'
+      : tok.error === 'invalid_grant' ? `The Redirect URI in the app's Settings must be exactly ${REDIRECT} (then click Save), and run the script again right away.`
+      : 'Check the Client ID, Secret, and Redirect URI.';
+    throw new Error(`Spotify did not return a token (${r.status}, ${why}).\n${hint}`);
+  }
   console.log('Authorized. Saving to Vercel (production)…');
 
   for (const [name, value] of [['SPOTIFY_CLIENT_ID', id], ['SPOTIFY_CLIENT_SECRET', secret], ['SPOTIFY_REFRESH_TOKEN', tok.refresh_token]]) {
