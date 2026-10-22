@@ -15,13 +15,34 @@ const PORT = 8724;
 const REDIRECT = `http://127.0.0.1:${PORT}/callback`;
 const SCOPES = 'user-read-currently-playing user-read-recently-played user-top-read';
 
-function ask(question, { hidden = false } = {}) {
+function ask(question) {
   return new Promise((resolve) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true });
-    if (hidden) rl._writeToOutput = (s) => { if (s.includes(question)) rl.output.write(s); };
-    rl.question(question, (a) => { rl.close(); if (hidden) process.stdout.write('\n'); resolve(a.trim()); });
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.question(question, (a) => { rl.close(); resolve(a.trim()); });
   });
 }
+
+// read a line without echoing it: nothing is shown while typing or pasting, only a count at the end
+function askHidden(question) {
+  return new Promise((resolve) => {
+    const { stdin, stdout } = process;
+    stdout.write(question);
+    let value = '';
+    stdin.setRawMode(true); stdin.resume(); stdin.setEncoding('utf8');
+    const done = () => { stdin.setRawMode(false); stdin.pause(); stdin.off('data', onData); stdout.write(`(${value.length} characters)\n`); resolve(value.trim()); };
+    const onData = (chunk) => {
+      chunk = chunk.replace(/\x1b\[20[01]~/g, '');              // bracketed-paste markers
+      for (const ch of chunk) {
+        if (ch === '\r' || ch === '\n') return done();
+        if (ch === '\u0003') { stdout.write('\n'); process.exit(130); }   // Ctrl+C
+        if (ch === '\u007f' || ch === '\b') value = value.slice(0, -1);
+        else if (ch >= ' ') value += ch;
+      }
+    };
+    stdin.on('data', onData);
+  });
+}
+
 const vercel = (args, input) => spawnSync('npx', ['--yes', 'vercel', ...args], { input, stdio: [input == null ? 'inherit' : 'pipe', 'inherit', 'inherit'] }).status === 0;
 const openBrowser = (url) => spawn(process.platform === 'darwin' ? 'open' : 'xdg-open', [url], { stdio: 'ignore', detached: true }).unref();
 
@@ -48,8 +69,9 @@ async function main() {
   console.log('\nConnect Spotify to vishalkanala.com\n');
   if (!existsSync('.vercel/project.json') && !existsSync('.vercel/repo.json') && !vercel(['link'])) throw new Error('Vercel link did not finish.');
   const id = await ask('Spotify Client ID: ');
-  const secret = await ask('Spotify Client Secret (hidden): ', { hidden: true });
-  if (!id || !secret) throw new Error('Both the Client ID and Secret are needed.');
+  const secret = await askHidden('Spotify Client Secret (hidden, paste once then press Enter): ');
+  if (!/^[0-9a-f]{32}$/i.test(id)) throw new Error(`The Client ID should be 32 letters and numbers (got ${id.length}). Copy it again from the app's Settings page.`);
+  if (!/^[0-9a-f]{32}$/i.test(secret)) throw new Error(`The Client Secret should be 32 letters and numbers (got ${secret.length}), so it may have been pasted twice. Copy it again and paste it once.`);
 
   const state = Math.random().toString(36).slice(2);
   const auth = new URL('https://accounts.spotify.com/authorize');
