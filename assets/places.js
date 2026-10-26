@@ -21,6 +21,10 @@ window.PLACES = [
     kind: 'home', tag: 'Hometown', note: 'Where it all started.', photos: [],
   },
   {
+    name: 'Plainsboro', region: 'New Jersey', lat: 40.3337, lng: -74.6007, date: '',
+    kind: 'visited', tag: 'Home base', note: '', photos: [],
+  },
+  {
     name: 'New Brunswick', region: 'New Jersey', lat: 40.5008, lng: -74.4474, date: '2023-09',
     kind: 'school', tag: 'Rutgers', note: 'Four years of classes, recitations, and late nights at the library.', photos: [],
   },
@@ -42,6 +46,14 @@ window.PLACES = [
   },
   {
     name: 'College Park', region: 'Maryland', lat: 38.9807, lng: -76.9369, date: '',
+    kind: 'visited', tag: 'Trip', note: '', photos: [],
+  },
+  {
+    name: 'Arlington', region: 'Virginia', lat: 38.8816, lng: -77.091, date: '',
+    kind: 'visited', tag: 'Trip', note: '', photos: [],
+  },
+  {
+    name: 'Georgetown', region: 'Washington, D.C.', lat: 38.9097, lng: -77.0654, date: '',
     kind: 'visited', tag: 'Trip', note: '', photos: [],
   },
   {

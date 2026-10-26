@@ -351,11 +351,13 @@
   }
 
   // scrapbook card: counts from the same data as the globe
-  const STATES = /^(Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming|District of Columbia)$/;
+  const STATES = /^(Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)$/;
   const places = window.PLACES || [];
   const regions = new Set(places.map((p) => p.region));
+  const US = (r) => STATES.test(r) || /^Washington, D\.C\.$/.test(r);
   const states = [...regions].filter((r) => STATES.test(r)).length;
-  const counts = { places: places.length, states, countries: regions.size - states + (states ? 1 : 0) };
+  const usRegions = [...regions].filter(US).length;
+  const counts = { places: places.length, states, countries: regions.size - usRegions + (usRegions ? 1 : 0) };
   document.querySelectorAll('[data-places]').forEach((el) => { el.textContent = counts[el.dataset.places]; });
 
   // campfire: clicking "Pull up a log" topples the heading over to the left, then someone carries a log in and sits across the fire from me
