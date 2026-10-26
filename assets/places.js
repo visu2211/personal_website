@@ -17,12 +17,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 window.PLACES = [
   {
-    name: 'Princeton', region: 'New Jersey', lat: 40.3573, lng: -74.6672, date: '',  // no date = shown first as home
+    name: 'Plainsboro', region: 'New Jersey', lat: 40.3337, lng: -74.6007, date: '',  // no date = shown first as home
     kind: 'home', tag: 'Hometown', note: 'Where it all started.', photos: [],
   },
   {
-    name: 'Plainsboro', region: 'New Jersey', lat: 40.3337, lng: -74.6007, date: '',
-    kind: 'visited', tag: 'Home base', note: '', photos: [],
+    name: 'Princeton', region: 'New Jersey', lat: 40.3573, lng: -74.6672, date: '',
+    kind: 'visited', tag: 'Hangout', note: 'The town I end up in most weekends.', photos: [],
   },
   {
     name: 'New Brunswick', region: 'New Jersey', lat: 40.5008, lng: -74.4474, date: '2023-09',
