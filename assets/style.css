@@ -504,3 +504,26 @@ html.cmdk-open { overflow: hidden; }
   .cmdk-chip kbd, .cmdk-foot { display: none; }
   .cmd-hint { display: none; }
 }
+
+/* ---------- spacing system: one set of values for every section and card ---------- */
+:root { --stack: 40px; --gap: 18px; --pad: 28px; --radius: 16px; }
+@media (max-width: 560px) { :root { --stack: 32px; --gap: 16px; --pad: 22px; } }
+/* heading block → content */
+.notes, .log, .projects, .badges, .edu, .pack, .side, .contact { margin-top: var(--stack); }
+/* card grids */
+.projects, .badges, .side { gap: var(--gap); }
+/* cards */
+.proj, .badge-card, .edu, .side a, .eagle { padding: var(--pad); }
+.proj, .edu, .side a, .eagle { border-radius: var(--radius); }
+.badge-card { border-radius: 0 0 var(--radius) var(--radius); }
+/* leadership: every title on one line, so the stat, title, role and blurb rows line up */
+.badge-card { container-type: inline-size; }
+.badge-card h3 { font-size: min(22px, 7cqi); white-space: nowrap; }   /* scales with the card so the longest title just fits */
+@media (max-width: 900px) { .badge-card h3 { white-space: normal; font-size: 22px; } }
+/* phones: keep every nav link on one line next to the search button */
+.site-nav a { white-space: nowrap; }
+@media (max-width: 560px) {
+  .site-nav .inner { gap: 12px; }
+  .site-nav ul { gap: 12px; font-size: 12.5px; }
+}
+@media (max-width: 360px) { .site-nav ul { gap: 9px; font-size: 12px; } }

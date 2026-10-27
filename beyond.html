@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261022">
+<link rel="stylesheet" href="assets/style.css?v=20261026">
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
 <style>
   .page-head { padding-block: clamp(60px, 10vw, 120px) 0; }
@@ -21,7 +21,7 @@
   .hobby-index svg { width: 16px; height: 16px; }
 
   /* chess panel */
-  .chess { margin-top: 36px; border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); overflow: hidden; }
+  .chess { margin-top: var(--stack); border: 1px solid var(--moss); border-radius: var(--radius); background: color-mix(in srgb, var(--pine) 90%, transparent); overflow: hidden; }
   .chess-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 20px 24px; border-bottom: 1px solid var(--moss); }
   .who { display: flex; align-items: center; gap: 14px; min-width: 0; }
   .who img { width: 44px; height: 44px; border-radius: 10px; background: var(--moss); }
@@ -68,7 +68,7 @@
   .chess-foot a { color: var(--ember); text-decoration: none; font-weight: 500; }
 
   /* music */
-  .music { margin-top: 36px; display: grid; gap: 26px; padding: 24px; border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); }
+  .music { margin-top: var(--stack); display: grid; gap: 24px; padding: var(--pad); border: 1px solid var(--moss); border-radius: var(--radius); background: color-mix(in srgb, var(--pine) 90%, transparent); }
   .sp-ava { width: 44px; height: 44px; flex: none; border-radius: 10px; display: grid; place-items: center; color: var(--win); background: var(--moss) center / cover no-repeat; }
   .sp-ava.photo svg { display: none; }
   .np { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 14px; background: var(--night); border: 1px solid var(--moss); min-width: 0; text-decoration: none; }
@@ -103,8 +103,8 @@
   .recent .ago { font-family: var(--f-mono); font-size: 11px; color: var(--lichen); white-space: nowrap; }
   .music.offline .music-grid, .music.offline .music-recent, .music.offline .tfoot { display: none; }
   /* training */
-  .train { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
-  .tpanel { border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 90%, transparent); padding: 22px 24px; display: flex; flex-direction: column; gap: 20px; min-width: 0; scroll-margin-top: 80px; }
+  .train { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); margin-top: var(--stack); }
+  .tpanel { border: 1px solid var(--moss); border-radius: var(--radius); background: color-mix(in srgb, var(--pine) 90%, transparent); padding: var(--pad); display: flex; flex-direction: column; gap: 20px; min-width: 0; scroll-margin-top: 80px; }
   .tp-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
   .tp-top .btn { padding: 8px 14px; font-size: 13px; }
   .tstats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--moss); }
@@ -149,8 +149,8 @@
   .lift b em { font-style: normal; font-size: 14px; color: var(--lichen); font-family: var(--f-body); }
   .tfoot { font-size: 13px; color: var(--lichen); margin-top: auto; }
   /* hobby cards */
-  .hobbies { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
-  .hobby { position: relative; padding: 28px; border: 1px solid var(--moss); border-radius: 18px; background: color-mix(in srgb, var(--pine) 85%, transparent); overflow: hidden; min-width: 0; scroll-margin-top: 80px; }
+  .hobbies { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); margin-top: var(--stack); }
+  .hobby { position: relative; padding: var(--pad); border: 1px solid var(--moss); border-radius: var(--radius); background: color-mix(in srgb, var(--pine) 85%, transparent); overflow: hidden; min-width: 0; scroll-margin-top: 80px; }
   .hobby h3 { font-size: 30px; margin-top: 18px; }
   .hobby p { margin: 8px 0 0; color: #d4cfc0; max-width: 46ch; }
   .hobby .tagline { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--lichen); margin-top: 16px; }
@@ -216,7 +216,7 @@
   @keyframes shimmer { to { background-position: -200% 0; } }
   .psn-foot { margin-top: 14px; font-size: 13px; color: var(--lichen); }
   .psn.offline .shelf { display: none; }
-  .album { margin-top: 18px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; padding: 26px 28px; border: 1px dashed var(--moss); border-radius: 18px; }
+  .album { margin-top: var(--gap); display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; padding: var(--pad); border: 1px dashed var(--moss); border-radius: var(--radius); }
   .album h3 { font-size: 26px; }
   .album p { margin: 4px 0 0; color: var(--lichen); }
 
@@ -448,9 +448,9 @@
 
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span class="credits">Controller model: <a href="https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936" target="_blank" rel="noopener">“Playstation 5 Dualsense”</a> by AHarmlessPotato, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span><span><a href="/scrapbook" style="color:inherit">Next: the scrapbook →</a></span></div></footer>
 
-<script src="assets/site.js?v=20261022"></script>
-<script src="assets/palette.js?v=20261022"></script>
-<script src="assets/chess.js?v=20261022"></script>
+<script src="assets/site.js?v=20261026"></script>
+<script src="assets/palette.js?v=20261026"></script>
+<script src="assets/chess.js?v=20261026"></script>
 <script src="assets/hevy-data.js"></script>
 <script src="assets/strava-data.js"></script>
 <script>
@@ -697,7 +697,7 @@
     if (!e.isIntersecting) return; io.unobserve(e.target);
     const canvas = e.target, stage = canvas.parentElement, loading = stage.querySelector('.bike-loading');
     try {
-      const { mountModel } = await import('./assets/models.js?v=20261022');
+      const { mountModel } = await import('./assets/models.js?v=20261026');
       const m = await mountModel(canvas, canvas.dataset.model);
       loading?.remove();
       const rb = stage.querySelector('[data-reset]'); if (rb) { rb.hidden = false; rb.addEventListener('click', m.reset); }

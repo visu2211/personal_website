@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&family=Caveat:wght@500&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261022">
+<link rel="stylesheet" href="assets/style.css?v=20261026">
 <style>
   :root { --paper: #efe8d6; --paper-ink: #2a2620; --f-hand: "Caveat", "Bradley Hand", cursive; }
   .page-head { padding-block: clamp(60px, 10vw, 120px) 0; }
@@ -19,7 +19,7 @@
   .tally b { font-family: var(--f-display); font-weight: 400; font-size: 34px; color: var(--bone); display: block; line-height: 1; margin-bottom: 4px; }
 
   /* route map */
-  .map { position: relative; margin-top: 36px; border: 1px solid var(--moss); border-radius: 18px; overflow: hidden; background: color-mix(in srgb, var(--pine) 92%, transparent); }
+  .map { position: relative; margin-top: var(--stack); border: 1px solid var(--moss); border-radius: var(--radius); overflow: hidden; background: color-mix(in srgb, var(--pine) 92%, transparent); }
   .map svg { display: block; width: 100%; height: auto; }
   .map .graticule { stroke: var(--moss); stroke-width: 1; stroke-dasharray: 2 6; }
   .map .grat-lbl { font: 11px var(--f-mono); fill: var(--lichen); }
@@ -155,7 +155,7 @@
     <div class="tally rise" style="--i:3"><div><b id="n-places">0</b>places</div><div><b id="n-regions">0</b>states &amp; countries</div><div><b id="n-photos">0</b>photos</div></div>
   </section>
 
-  <section class="sec" id="map" data-trail="My world" style="padding-top:56px">
+  <section class="sec" id="map" data-trail="My world">
     <div class="eyebrow reveal" style="justify-content:space-between">Vishal's world <a class="text-link" href="/world" style="letter-spacing:.06em">Open full screen →</a></div>
     <div class="globe-wrap reveal">
       <div id="globe" role="img" aria-label="Interactive globe showing the places I've lived, studied, worked, and visited"></div>
@@ -174,7 +174,7 @@
     <div class="place-chips reveal" id="place-chips" role="group" aria-label="Places"></div>
   </section>
 
-  <section class="sec" id="journal" data-trail="Journal" style="padding-top:72px">
+  <section class="sec" id="journal" data-trail="Journal">
     <div class="eyebrow reveal">Journal</div>
     <h2 class="reveal">The photos</h2>
     <div class="filters" id="filters" role="group" aria-label="Filter places"></div>
@@ -196,7 +196,7 @@
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span><a href="/photos" style="color:inherit">Next: the photo album →</a></span></div></footer>
 
 <script src="assets/places.js"></script>
-<script src="assets/daynight.js?v=20261022"></script>
+<script src="assets/daynight.js?v=20261026"></script>
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
@@ -441,7 +441,7 @@
   renderCards();
 })();
 </script>
-<script src="assets/site.js?v=20261022"></script>
-<script src="assets/palette.js?v=20261022"></script>
+<script src="assets/site.js?v=20261026"></script>
+<script src="assets/palette.js?v=20261026"></script>
 </body>
 </html>
