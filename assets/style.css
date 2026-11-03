@@ -653,3 +653,6 @@ html.cmdk-open { overflow: hidden; }
   100% { transform: translateY(-3px) scale(1.1) rotate(0); }
 }
 @media (prefers-reduced-motion: reduce) { .edu .logo:hover img { animation: none; transform: scale(1.06); } }
+/* let the hop and glow spill outside the logo box, drawn above the card's other content */
+.edu .logo { overflow: visible; position: relative; z-index: 3; }
+.edu .logo:hover { z-index: 5; }
