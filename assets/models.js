@@ -38,7 +38,8 @@ export async function mountModel(canvas, name, opts = {}) {
   const pivot = new THREE.Group(); pivot.add(obj); scene.add(pivot);
 
   const ground = new THREE.Mesh(new THREE.CircleGeometry(spec.fit * 0.95, 48), new THREE.ShadowMaterial({ opacity: 0.32 }));
-  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true;
+  if (spec.shadow !== false) scene.add(ground);   // models can opt out of the floor shadow
   // below the object's reach in any orientation, so spinning never passes through the shadow plane
   ground.position.y = -(size.length() * k) / 2 - 0.04;
 
@@ -352,8 +353,9 @@ async function buildEagleBadge() {
     const ix = CX + (front ? x : -x) / A * RX, iy = CY - y / B * RY;
     uv.setXY(i, ix / IW, 1 - iy / IH);
   }
-  const face = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.55, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.45, envMapIntensity: 0.7 });
-  const chrome = new THREE.MeshPhysicalMaterial({ color: '#d9dde1', metalness: 0.9, roughness: 0.38, envMapIntensity: 0.8 });
+  // matte, diffuse-only materials: no reflections or glare
+  const face = new THREE.MeshLambertMaterial({ map: tex });
+  const chrome = new THREE.MeshLambertMaterial({ color: '#c9cdd2' });
   const coin = new THREE.Mesh(geo, [face, chrome]);
   const g = new THREE.Group(); g.add(coin);
   return g;
@@ -390,6 +392,6 @@ async function loadDualSense() {
 const BUILDERS = {
   bolt: { build: buildBolt, view: { fit: 2.4, dist: 4.9, home: [0, -0.6, 0], spin: 0.004 } },
   controller: { build: loadDualSense, view: { fit: 2.75, dist: 5.2, home: [1.42, 0, 0], spin: 0.0025 } },
-  eagle: { build: buildEagleBadge, view: { fit: 2.6, dist: 5.4, home: [0, 0, 0], spin: 0.008 } },
+  eagle: { build: buildEagleBadge, view: { fit: 2.6, dist: 5.4, home: [0, 0, 0], spin: 0.008, shadow: false } },
   volleyball: { build: buildVolleyball, view: { fit: 2.0, dist: 5.2, home: [0.4, 0.6, 0.2], spin: 0.008 } },
 };
