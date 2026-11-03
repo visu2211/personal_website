@@ -630,7 +630,10 @@ html.cmdk-open { overflow: hidden; }
   .edu .co { flex: 1 1 auto; }
   .edu .when { flex: none; }
 }
-.edu .logo img { max-height: 44px; }
+/* school logos are mascots, so they get a taller plate than the company wordmarks */
+.edu .logo { height: 76px; }
+.edu .logo img { max-height: 72px; }
+@media (max-width: 560px) { .edu .logo { width: 72px; height: 64px; } .edu .logo img { max-height: 60px; } }
 
 /* one row of figures: GPA on the left, tests on the right */
 .edu dl.edu-row { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px 32px; }
