@@ -261,7 +261,7 @@ h2 { font-size: clamp(34px, 5vw, 54px); line-height: 1.05; margin-top: 14px; }
 .frame:nth-child(2) { transform: translateY(-14px); }
 a.frame:hover { transform: translateY(-6px) rotate(-1deg); }
 .frame img { width: 100%; height: 100%; object-fit: cover; }
-.eagle.solo { grid-template-columns: minmax(0, 1fr); }
+.eagle.solo { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); }
 .eagle.solo .eagle-photos { display: none; }
 .eagle.solo p { max-width: 64ch; }
 .frame.empty { display: grid; place-items: center; background: repeating-linear-gradient(135deg, #1a231f 0 10px, #1e2924 10px 20px); border: 1px dashed var(--moss); }
@@ -509,7 +509,7 @@ html.cmdk-open { overflow: hidden; }
 :root { --stack: 40px; --gap: 18px; --pad: 28px; --radius: 16px; }
 @media (max-width: 560px) { :root { --stack: 32px; --gap: 16px; --pad: 22px; } }
 /* heading block → content */
-.notes, .log, .projects, .badges, .edu, .pack, .side, .contact { margin-top: var(--stack); }
+.notes, .log, .projects, .badges, .edu, .pack, .side, .contact, .lc { margin-top: var(--stack); }
 /* card grids */
 .projects, .badges, .side { gap: var(--gap); }
 /* cards */
@@ -527,3 +527,79 @@ html.cmdk-open { overflow: hidden; }
   .site-nav ul { gap: 12px; font-size: 12.5px; }
 }
 @media (max-width: 360px) { .site-nav ul { gap: 9px; font-size: 12px; } }
+
+/* ---------- field drills: LeetCode card ---------- */
+.lc { --easy: #7fcf8f; --medium: var(--ember); --hard: #e46f5c;
+  margin-top: var(--stack); display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--gap);
+  padding: var(--pad); border: 1px solid var(--moss); border-radius: var(--radius); background: color-mix(in srgb, var(--pine) 85%, transparent); }
+.lc > div { min-width: 0; }
+.lc-solved, .lc-badges, .lc-cal { padding: 20px; border: 1px solid var(--moss); border-radius: 12px; background: var(--night); }
+.lc-solved { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px; align-items: center; }
+.lc-ring { position: relative; width: 168px; aspect-ratio: 1; }
+.lc-ring svg { width: 100%; height: 100%; transform: rotate(135deg); }
+.lc-ring circle { fill: none; stroke-width: 7; stroke-linecap: round; }
+.lc-ring .track { stroke: var(--moss); }
+.lc-ring .seg.easy { stroke: var(--easy); } .lc-ring .seg.medium { stroke: var(--medium); } .lc-ring .seg.hard { stroke: var(--hard); }
+.lc-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.15; }
+.lc-center b { font-family: var(--f-display); font-weight: 400; font-size: 38px; }
+.lc-center span { font-family: var(--f-mono); font-size: 12px; color: var(--lichen); }
+.lc-center small { margin-top: 4px; font-size: 13px; color: var(--easy); }
+.lc-center em { font-style: normal; font-size: 12px; color: var(--lichen); }
+.lc-diff { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.lc-diff li { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: baseline; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--pine) 80%, transparent); }
+.lc-diff span { font-size: 13px; font-weight: 600; }
+.lc-diff b { justify-self: end; font-family: var(--f-mono); font-weight: 400; font-size: 13px; }
+.lc-diff i { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: var(--moss); overflow: hidden; }
+.lc-diff s { display: block; height: 100%; width: 0; border-radius: 2px; transition: width 1s ease-out; }
+.lc-diff .easy span { color: var(--easy); } .lc-diff .easy s { background: var(--easy); }
+.lc-diff .medium span { color: var(--medium); } .lc-diff .medium s { background: var(--medium); }
+.lc-diff .hard span { color: var(--hard); } .lc-diff .hard s { background: var(--hard); }
+.lc-badges { display: grid; grid-template-rows: auto 1fr auto; gap: 12px; }
+.lc-badges .tlabel b { color: var(--bone); margin-left: 6px; }
+.lc-badge-row { display: flex; justify-content: center; align-items: center; gap: 14px; }
+.lc-badge-row img { width: 72px; height: 72px; object-fit: contain; opacity: .45; filter: grayscale(.5); transition: opacity .3s, filter .3s, transform .3s; }
+.lc-badge-row img:hover { opacity: 1; filter: none; transform: translateY(-3px) scale(1.05); }
+.lc-recent { display: grid; gap: 2px; }
+.lc-recent small { font-size: 12px; color: var(--lichen); }
+.lc-recent b { font-weight: 600; font-size: 15px; }
+.lc .tlabel { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--lichen); }
+.lc-cal { grid-column: 1 / -1; display: grid; gap: 14px; }
+.lc-cal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 18px; flex-wrap: wrap; font-size: 14px; color: var(--lichen); }
+.lc-cal-head b { color: var(--bone); font-weight: 600; }
+.lc-cal-head > span:first-child b { font-family: var(--f-display); font-weight: 400; font-size: 22px; margin-right: 4px; }
+.lc-heat-scroll { overflow-x: auto; padding-bottom: 2px; }
+.lc-heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); grid-auto-columns: minmax(9px, 1fr); gap: 3px; min-width: 560px; }
+.lc-heat i { aspect-ratio: 1; border-radius: 2px; background: color-mix(in srgb, var(--moss) 70%, transparent); }
+.lc-heat .l1 { background: color-mix(in srgb, var(--ember) 30%, var(--moss)); }
+.lc-heat .l2 { background: color-mix(in srgb, var(--ember) 55%, var(--moss)); }
+.lc-heat .l3 { background: color-mix(in srgb, var(--ember) 80%, var(--moss)); }
+.lc-heat .l4 { background: var(--ember); }
+.lc-months { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(9px, 1fr); column-gap: 3px; min-width: 560px; margin-top: 6px;
+  font-family: var(--f-mono); font-size: 11px; color: var(--lichen); }
+.lc-months span { grid-row: 1; white-space: nowrap; }
+.lc-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--lichen); }
+.lc-foot a { color: var(--ember); text-decoration: none; font-weight: 500; }
+.lc-foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.lc.offline .lc-solved, .lc.offline .lc-badges, .lc.offline .lc-cal { display: none; }
+@media (max-width: 900px) { .lc { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) {
+  .lc-solved { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .lc-diff { width: 100%; }
+  .lc-solved, .lc-badges, .lc-cal { padding: 16px; }
+}
+
+/* Eagle Scout card: rotatable medal in the space beside the text */
+.eagle-stage { position: relative; width: 100%; aspect-ratio: 1; max-width: 300px; justify-self: center; cursor: grab; touch-action: none; }
+.eagle-stage:active { cursor: grabbing; }
+.eagle-stage canvas { display: block; width: 100%; height: 100%; }
+.eagle:not(.solo) .eagle-stage { display: none; }   /* real Scouting photos take this spot once there are some */
+.model-reset { position: absolute; right: 4px; bottom: 4px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--moss); background: color-mix(in srgb, var(--night) 80%, transparent); color: var(--lichen); cursor: pointer; transition: color .2s, border-color .2s; }
+.model-reset:hover { color: var(--ember); border-color: var(--ember); }
+@media (max-width: 900px) { .eagle.solo { grid-template-columns: minmax(0, 1fr); } .eagle-stage { max-width: 240px; } }
+/* LeetCode heatmap: the whole year always fits, no scrollbar; squares shrink on small screens */
+.lc-heat-scroll { overflow: visible; }
+.lc-heat, .lc-months { min-width: 0; grid-auto-columns: 1fr; gap: 3px; }
+.lc-months { overflow: hidden; column-gap: 3px; }
+.lc-cal { padding: 18px 16px; }
+@media (max-width: 560px) { .lc-heat { gap: 2px; } .lc-months { column-gap: 2px; font-size: 10px; } .lc-cal { padding: 14px 12px; } }

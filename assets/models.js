@@ -331,6 +331,76 @@ function buildVolleyball() {
   return ball;
 }
 
+/* ======================= Eagle Scout medal ======================= */
+// A stylized Eagle medal: silver eagle with spread wings and a BE PREPARED scroll,
+// hanging by a ring from a red, white and blue ribbon with a bar pin on top.
+function buildEagle() {
+  const silver = new THREE.MeshPhysicalMaterial({ color: '#dfe3e8', metalness: 1, roughness: 0.26, clearcoat: 0.4, clearcoatRoughness: 0.2 });
+  const g = new THREE.Group();
+
+  // eagle silhouette (head turned to its right), extruded with a soft bevel so the edges catch light
+  const pts = [[-0.05, 0.62], [0.08, 0.67], [0.17, 0.61], [0.27, 0.57], [0.16, 0.52], [0.1, 0.45],
+    [0.25, 0.42], [0.55, 0.56], [0.9, 0.74], [1.12, 0.72], [1.03, 0.57], [1.1, 0.48], [0.96, 0.4], [1.01, 0.29],
+    [0.86, 0.24], [0.88, 0.13], [0.7, 0.11], [0.7, 0.01], [0.45, 0.04], [0.24, -0.01], [0.18, -0.26],
+    [0.27, -0.56], [0.1, -0.48], [0, -0.62]];
+  const mirrored = pts.slice(0, -1).filter(([x]) => x > 0.09).reverse().map(([x, y]) => [-x, y]);
+  const outline = [...pts, ...mirrored, [-0.1, 0.45]];
+  const shape = new THREE.Shape(outline.map(([x, y]) => new THREE.Vector2(x, y)));
+  const eagleGeo = new THREE.ExtrudeGeometry(shape, { depth: 0.09, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.025, bevelSegments: 3, curveSegments: 6 });
+  eagleGeo.translate(0, 0, -0.045);
+  const eagle = new THREE.Mesh(eagleGeo, silver);
+  g.add(eagle);
+
+  // engraved feather lines on each wing
+  const groove = new THREE.MeshPhysicalMaterial({ color: '#8d949c', metalness: 1, roughness: 0.45 });
+  for (const side of [1, -1]) for (let i = 0; i < 4; i++) {
+    const f = new THREE.Mesh(new THREE.BoxGeometry(0.5 - i * 0.07, 0.018, 0.02), groove);
+    f.position.set(side * (0.55 + i * 0.06), 0.48 - i * 0.1, 0.08);
+    f.rotation.z = side * (0.42 - i * 0.08);
+    g.add(f);
+  }
+
+  // scroll across the tail with the motto
+  const c = document.createElement('canvas'); c.width = 512; c.height = 96;
+  const x = c.getContext('2d');
+  const grd = x.createLinearGradient(0, 0, 0, 96); grd.addColorStop(0, '#f2f4f6'); grd.addColorStop(1, '#aeb4ba');
+  x.fillStyle = grd; x.fillRect(0, 0, 512, 96);
+  x.fillStyle = '#2a2f33'; x.font = '600 52px Georgia, serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText('BE PREPARED', 256, 52);
+  const scrollTex = new THREE.CanvasTexture(c); scrollTex.colorSpace = THREE.SRGBColorSpace; scrollTex.anisotropy = 8;
+  const face = new THREE.MeshPhysicalMaterial({ map: scrollTex, metalness: 0.6, roughness: 0.35 });
+  const scroll = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.2, 0.06), [silver, silver, silver, silver, face, silver]);
+  scroll.position.set(0, -0.2, 0.1);
+  g.add(scroll);
+
+  // ring linking the eagle to the ribbon
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.018, 12, 32), silver);
+  ring.position.set(-0.02, 0.76, 0);
+  g.add(ring);
+
+  // ribbon: red, white and blue stripes on both faces, with a V-notch at the bottom
+  const rc = document.createElement('canvas'); rc.width = 256; rc.height = 16;
+  const rx = rc.getContext('2d');
+  [['#b3202c', 0, 0.38], ['#f2efe8', 0.38, 0.62], ['#22356f', 0.62, 1]].forEach(([col, a, b]) => { rx.fillStyle = col; rx.fillRect(a * 256, 0, (b - a) * 256, 16); });
+  rx.fillStyle = '#f2efe8'; rx.fillRect(0, 0, 10, 16); rx.fillRect(246, 0, 10, 16);
+  const ribTex = new THREE.CanvasTexture(rc); ribTex.colorSpace = THREE.SRGBColorSpace;
+  const rib = new THREE.Shape([[-0.42, 1.95], [0.42, 1.95], [0.42, 0.95], [0, 0.82], [-0.42, 0.95]].map(([a, b]) => new THREE.Vector2(a, b)));
+  const ribGeo = new THREE.ExtrudeGeometry(rib, { depth: 0.025, bevelEnabled: false });
+  // map stripes across the ribbon's width
+  const uv = ribGeo.attributes.uv, pos = ribGeo.attributes.position;
+  for (let i = 0; i < uv.count; i++) uv.setXY(i, (pos.getX(i) + 0.42) / 0.84, 0.5);
+  ribGeo.translate(0, 0, -0.0125);
+  const ribbon = new THREE.Mesh(ribGeo, new THREE.MeshStandardMaterial({ map: ribTex, roughness: 0.8, metalness: 0 }));
+  ribbon.position.z = -0.02;
+  g.add(ribbon);
+
+  // bar pin across the top of the ribbon
+  const bar = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.12, 0.08), silver);
+  bar.position.set(0, 1.97, 0);
+  g.add(bar);
+  return g;
+}
+
 /* ======================= DualSense from a real model file ======================= */
 // "Playstation 5 Dualsense" by AHarmlessPotato on Sketchfab, CC BY 4.0
 // https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936
@@ -362,5 +432,6 @@ async function loadDualSense() {
 const BUILDERS = {
   bolt: { build: buildBolt, view: { fit: 2.4, dist: 4.9, home: [0, -0.6, 0], spin: 0.004 } },
   controller: { build: loadDualSense, view: { fit: 2.75, dist: 5.2, home: [1.42, 0, 0], spin: 0.0025 } },
+  eagle: { build: buildEagle, view: { fit: 2.9, dist: 5.4, home: [0, 0, 0], spin: 0.006 } },
   volleyball: { build: buildVolleyball, view: { fit: 2.0, dist: 5.2, home: [0.4, 0.6, 0.2], spin: 0.008 } },
 };

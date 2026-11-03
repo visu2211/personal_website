@@ -26,7 +26,7 @@
 
     // plain words people type for each section, since the labels are trail-themed
     const KEYS = { notes: 'about me bio', basecamp: 'education school rutgers gpa', log: 'work experience jobs internships capital one', projects: 'projects built portfolio',
-      pack: 'skills tech stack languages', badges: 'leadership teaching ta involvement', eagle: 'eagle scout scouting', side: 'hobbies beyond scrapbook',
+      pack: 'skills tech stack languages', drills: 'leetcode coding problems practice', badges: 'leadership teaching ta involvement', eagle: 'eagle scout scouting', side: 'hobbies beyond scrapbook',
       campfire: 'contact talk email', training: 'gym lifting running hevy strava', music: 'spotify songs listening', chess: 'chess rating', court: 'hobbies volleyball motorcycle games ps5',
       map: 'globe places', journal: 'photos trips' };
     // this page's sections, in page order
@@ -44,6 +44,7 @@
 
     add('Open', 'LinkedIn', 'out', () => open('https://linkedin.com/in/vishal-kanala'), { hint: 'new tab', keys: 'linkedin profile' });
     add('Open', 'GitHub', 'out', () => open('https://github.com/visu2211'), { hint: 'new tab', keys: 'code repos' });
+    add('Open', 'LeetCode profile', 'out', () => open('https://leetcode.com/u/visu22/'), { hint: 'new tab', keys: 'leetcode coding problems' });
     add('Open', 'Play me on chess.com', 'out', () => open('https://www.chess.com/member/visu22'), { hint: 'new tab', keys: 'chess blitz challenge' });
     add('Open', 'Volleyball clips on Hudl', 'out', () => open('https://www.hudl.com/profile/17503000/Vishal-Kanala'), { hint: 'new tab', keys: 'volleyball highlights video' });
     add('Open', 'Recent runs on Strava', 'out', () => open('https://www.strava.com/athletes/visu22'), { hint: 'new tab', keys: 'running strava' });

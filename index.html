@@ -11,7 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261026">
+<link rel="stylesheet" href="assets/style.css?v=20261102">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -186,6 +187,35 @@
     </div>
   </section>
 
+  <section class="sec wrap" id="drills" data-trail="Field drills">
+    <div class="eyebrow reveal">Field drills</div>
+    <h2 class="reveal">Daily reps</h2>
+    <p class="sec-intro reveal">I keep my problem-solving sharp on LeetCode. These numbers update on their own.</p>
+    <div class="lc reveal" id="lc">
+      <div class="lc-solved">
+        <div class="lc-ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><g id="lc-arcs"></g></svg>
+          <div class="lc-center"><b id="lc-all">—</b><span id="lc-of">/ —</span><small>Solved</small><em id="lc-attempt"></em></div>
+        </div>
+        <ul class="lc-diff">
+          <li class="easy"><span>Easy</span><b data-lc="easy">—</b><i><s></s></i></li>
+          <li class="medium"><span>Medium</span><b data-lc="medium">—</b><i><s></s></i></li>
+          <li class="hard"><span>Hard</span><b data-lc="hard">—</b><i><s></s></i></li>
+        </ul>
+      </div>
+      <div class="lc-badges">
+        <div class="tlabel">Badges <b id="lc-badge-count"></b></div>
+        <div class="lc-badge-row" id="lc-badge-row"></div>
+        <div class="lc-recent"><small>Most recent</small><b id="lc-badge-recent">—</b></div>
+      </div>
+      <div class="lc-cal">
+        <div class="lc-cal-head"><span><b id="lc-subs">—</b> submissions in the past year</span><span class="lc-cal-stats">Active days <b id="lc-days">—</b> · Max streak <b id="lc-streak">—</b></span></div>
+        <div class="lc-heat-scroll"><div class="lc-heat" id="lc-heat" role="img" aria-label="LeetCode submissions per day over the past year"></div><div class="lc-months" id="lc-months"></div></div>
+      </div>
+      <div class="lc-foot"><span id="lc-foot">Live from LeetCode</span><a href="https://leetcode.com/u/visu22/" target="_blank" rel="noopener">See my LeetCode ↗</a></div>
+    </div>
+  </section>
+
   <section class="sec wrap" id="badges" data-trail="Merit badges">
     <div class="eyebrow reveal">Merit badges</div>
     <h2 class="reveal">Leadership &amp; involvement</h2>
@@ -226,6 +256,7 @@
         <a class="text-link" href="/photos#eagle-scout">See the Scouting album →</a>
       </div>
       <div class="eagle-photos" id="eagle-photos"></div>
+      <div class="eagle-stage model-stage"><canvas data-model="eagle" aria-label="3D Eagle Scout medal. Drag to rotate it." role="img"></canvas><button class="model-reset" type="button" data-reset hidden aria-label="Reset view"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button></div>
     </div>
   </section>
 
@@ -335,9 +366,9 @@
 
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span><a href="/beyond" style="color:inherit">Next: beyond code →</a></span></div></footer>
 
-<script src="assets/site.js?v=20261026"></script>
-<script src="assets/palette.js?v=20261026"></script>
-<script src="assets/chess.js?v=20261026"></script>
+<script src="assets/site.js?v=20261102"></script>
+<script src="assets/palette.js?v=20261102"></script>
+<script src="assets/chess.js?v=20261102"></script>
 <script src="assets/photos.js"></script>
 <script src="assets/places.js"></script>
 <script>
@@ -393,12 +424,79 @@
     }
   })();
 
+  // LeetCode card: served by /api/leetcode (LeetCode blocks browser requests, so a Vercel function relays it)
+  (async () => {
+    const card = document.getElementById('lc'), $ = (id) => document.getElementById(id);
+    const fmt = (n) => Number(n).toLocaleString('en-US');
+    try {
+      const r = await fetch('/api/leetcode');
+      if (!r.ok) throw new Error(r.status);
+      const d = await r.json();
+      const { solved, total } = d;
+      $('lc-all').textContent = fmt(solved.all); $('lc-of').textContent = '/ ' + fmt(total.all);
+      $('lc-attempt').textContent = d.attempting ? `${d.attempting} attempting` : '';
+      for (const k of ['easy', 'medium', 'hard']) {
+        const li = card.querySelector(`.lc-diff .${k}`);
+        li.querySelector('b').textContent = `${fmt(solved[k])}/${fmt(total[k])}`;
+        li.querySelector('s').style.width = (100 * solved[k] / total[k]).toFixed(1) + '%';
+      }
+      // ring: a 270° track split into easy / medium / hard by share of everything solved
+      const R = 52, C = 2 * Math.PI * R, sweep = 0.75 * C, gap = 4;
+      let at = 0;
+      $('lc-arcs').innerHTML = `<circle class="track" cx="60" cy="60" r="${R}" stroke-dasharray="${sweep} ${C}" />` +
+        ['easy', 'medium', 'hard'].map((k) => {
+          const len = Math.max(0, sweep * solved[k] / solved.all - gap);
+          const arc = `<circle class="seg ${k}" cx="60" cy="60" r="${R}" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-at}" />`;
+          at += sweep * solved[k] / solved.all; return arc;
+        }).join('');
+      // badges, faded until hovered
+      $('lc-badge-count').textContent = d.badges.length;
+      $('lc-badge-row').innerHTML = d.badges.slice(0, 3).map((b) => `<img src="${b.icon}" alt="${b.name}" title="${b.name}" loading="lazy" decoding="async">`).join('');
+      $('lc-badge-recent').textContent = d.badges[0]?.name || '—';
+      // heatmap: 53 Sunday-first weeks ending this week
+      const days = d.calendar.days, today = new Date(), DAY = 86400000;
+      const iso = (t) => new Date(t).toISOString().slice(0, 10);
+      const end = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+      const start = end - (52 * 7 + new Date(end).getUTCDay()) * DAY;
+      let cells = '', months = '', subs = 0, lastMonth = -1, col = 0;
+      for (let t = start; t <= end; t += DAY) {
+        const n = days[iso(t)] || 0; subs += n;
+        const lvl = n === 0 ? 0 : n < 3 ? 1 : n < 6 ? 2 : n < 10 ? 3 : 4;
+        cells += `<i class="l${lvl}" title="${new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}: ${n} submission${n === 1 ? '' : 's'}"></i>`;
+        const dt = new Date(t);
+        if (dt.getUTCDay() === 0) {
+          if (dt.getUTCMonth() !== lastMonth && dt.getUTCDate() <= 7) months += `<span style="grid-column:${col + 1}">${dt.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })}</span>`;
+          lastMonth = dt.getUTCMonth(); col++;
+        }
+      }
+      $('lc-heat').innerHTML = cells; $('lc-months').innerHTML = months;
+      $('lc-subs').textContent = fmt(subs); $('lc-days').textContent = fmt(d.calendar.activeDays); $('lc-streak').textContent = fmt(d.calendar.maxStreak);
+      $('lc-foot').textContent = d.ranking ? `Live from LeetCode · ranked #${fmt(d.ranking)}` : 'Live from LeetCode';
+    } catch {
+      card.classList.add('offline');
+      $('lc-foot').textContent = 'LeetCode stats are unavailable right now.';
+    }
+  })();
+
   ChessLive.stats().then((s) => {
     document.querySelectorAll('[data-chess]').forEach((el) => {
       const v = s[el.dataset.chess];
       el.textContent = v ?? '—';
     });
   });
+</script>
+<script type="module">
+  // 3D Eagle medal: loads only when the Eagle Scout card scrolls near
+  const io = new IntersectionObserver((entries) => entries.forEach(async (e) => {
+    if (!e.isIntersecting) return; io.unobserve(e.target);
+    const canvas = e.target, stage = canvas.parentElement;
+    try {
+      const { mountModel } = await import('./assets/models.js?v=20261102');
+      const m = await mountModel(canvas, canvas.dataset.model);
+      const rb = stage.querySelector('[data-reset]'); if (rb) { rb.hidden = false; rb.addEventListener('click', m.reset); }
+    } catch (err) { console.error(err); stage.hidden = true; }
+  }), { rootMargin: '300px' });
+  document.querySelectorAll('canvas[data-model]').forEach((c) => io.observe(c));
 </script>
 </body>
 </html>
