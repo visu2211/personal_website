@@ -1,12 +1,44 @@
-// Published from the upload page (Hevy export) on 2026-10-19.
+// Published from the upload page (Hevy export) on 2026-11-03.
 window.HEVY = {
-  "generated": "2026-10-19",
-  "totalWorkouts": 119,
+  "generated": "2026-11-03",
+  "totalWorkouts": 123,
   "since": "2025-09-24",
-  "thisYear": 89,
-  "last30": 7,
-  "totalVolumeLbs": 899831,
+  "thisYear": 93,
+  "last30": 6,
+  "totalVolumeLbs": 918992,
   "recent": [
+    {
+      "title": "Afternoon workout 💪",
+      "date": "2026-11-03",
+      "minutes": 45,
+      "exercises": 5,
+      "sets": 11,
+      "volumeLbs": 4763
+    },
+    {
+      "title": "Pull",
+      "date": "2026-11-02",
+      "minutes": 67,
+      "exercises": 5,
+      "sets": 11,
+      "volumeLbs": 7220
+    },
+    {
+      "title": "Afternoon workout 💪",
+      "date": "2026-10-29",
+      "minutes": 76,
+      "exercises": 5,
+      "sets": 11,
+      "volumeLbs": 3380
+    },
+    {
+      "title": "Sharms",
+      "date": "2026-10-22",
+      "minutes": 47,
+      "exercises": 5,
+      "sets": 13,
+      "volumeLbs": 3799
+    },
     {
       "title": "Back + Shoulders + Triceps",
       "date": "2026-10-07",
@@ -14,41 +46,13 @@ window.HEVY = {
       "exercises": 6,
       "sets": 14,
       "volumeLbs": 8108
-    },
-    {
-      "title": "Chest + Bicep + Rear Delt",
-      "date": "2026-10-07",
-      "minutes": 54,
-      "exercises": 6,
-      "sets": 12,
-      "volumeLbs": 4340
-    },
-    {
-      "title": "Back + Shoulders + Triceps",
-      "date": "2026-10-02",
-      "minutes": 59,
-      "exercises": 6,
-      "sets": 12,
-      "volumeLbs": 6965
-    },
-    {
-      "title": "Chest + Bicep + Rear Delt",
-      "date": "2026-10-01",
-      "minutes": 65,
-      "exercises": 5,
-      "sets": 9,
-      "volumeLbs": 4105
-    },
-    {
-      "title": "Chest + Back",
-      "date": "2026-09-24",
-      "minutes": 70,
-      "exercises": 6,
-      "sets": 14,
-      "volumeLbs": 3375
     }
   ],
   "days": {
+    "2026-11-03": 1,
+    "2026-11-02": 1,
+    "2026-10-29": 1,
+    "2026-10-22": 1,
     "2026-10-07": 2,
     "2026-10-02": 1,
     "2026-10-01": 1,
@@ -83,7 +87,6 @@ window.HEVY = {
     "2026-06-25": 1,
     "2026-06-23": 1,
     "2026-06-22": 1,
-    "2026-06-16": 1,
-    "2026-06-15": 1
+    "2026-06-16": 1
   }
 };
