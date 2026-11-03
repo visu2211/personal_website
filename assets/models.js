@@ -354,8 +354,9 @@ async function buildEagleBadge() {
     uv.setXY(i, ix / IW, 1 - iy / IH);
   }
   // matte, diffuse-only materials: no reflections or glare
-  const face = new THREE.MeshLambertMaterial({ map: tex });
-  const chrome = new THREE.MeshLambertMaterial({ color: '#c9cdd2' });
+  // tinted down a bit so the scene lights don't wash out the white eagle's detail
+  const face = new THREE.MeshLambertMaterial({ map: tex, color: '#a9a9a9' });
+  const chrome = new THREE.MeshLambertMaterial({ color: '#9ea3a8' });
   const coin = new THREE.Mesh(geo, [face, chrome]);
   const g = new THREE.Group(); g.add(coin);
   return g;

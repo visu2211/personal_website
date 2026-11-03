@@ -491,7 +491,7 @@
     if (!e.isIntersecting) return; io.unobserve(e.target);
     const canvas = e.target, stage = canvas.parentElement;
     try {
-      const { mountModel } = await import('./assets/models.js?v=20261105');
+      const { mountModel } = await import('./assets/models.js?v=20261106');
       const m = await mountModel(canvas, canvas.dataset.model);
       const rb = stage.querySelector('[data-reset]'); if (rb) { rb.hidden = false; rb.addEventListener('click', m.reset); }
     } catch (err) { console.error(err); stage.hidden = true; }
