@@ -352,8 +352,8 @@ async function buildEagleBadge() {
     const ix = CX + (front ? x : -x) / A * RX, iy = CY - y / B * RY;
     uv.setXY(i, ix / IW, 1 - iy / IH);
   }
-  const face = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.35, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12 });
-  const chrome = new THREE.MeshPhysicalMaterial({ color: '#e6e9ec', metalness: 1, roughness: 0.18 });
+  const face = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.55, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.45, envMapIntensity: 0.7 });
+  const chrome = new THREE.MeshPhysicalMaterial({ color: '#d9dde1', metalness: 0.9, roughness: 0.38, envMapIntensity: 0.8 });
   const coin = new THREE.Mesh(geo, [face, chrome]);
   const g = new THREE.Group(); g.add(coin);
   return g;
