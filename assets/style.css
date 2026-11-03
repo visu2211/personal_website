@@ -640,3 +640,16 @@ html.cmdk-open { overflow: hidden; }
 .edu dl.edu-row > div { display: flex; align-items: baseline; gap: 18px; }
 .edu dl.edu-row dd { margin: 0; }
 @media (max-width: 560px) { .edu dl.edu-row { flex-direction: column; gap: 10px; } .edu dl.edu-row > div { flex-direction: column; gap: 2px; } }
+
+/* school logos: hovering makes the mascot hop, swing and settle, with a glow in the school color */
+.edu .logo { cursor: default; }
+.edu .logo img { transition: filter .35s ease; transform-origin: 50% 90%; }
+.edu .logo:hover img { animation: rally .9s cubic-bezier(.3, .7, .4, 1) both; filter: drop-shadow(0 0 10px var(--glow)) drop-shadow(0 6px 10px rgba(0, 0, 0, .45)); }
+@keyframes rally {
+  0%   { transform: none; }
+  25%  { transform: translateY(-9px) scale(1.14) rotate(-9deg); }
+  50%  { transform: translateY(-4px) scale(1.12) rotate(7deg); }
+  72%  { transform: translateY(-6px) scale(1.12) rotate(-3deg); }
+  100% { transform: translateY(-3px) scale(1.1) rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) { .edu .logo:hover img { animation: none; transform: scale(1.06); } }
