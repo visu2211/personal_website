@@ -606,3 +606,28 @@ html.cmdk-open { overflow: hidden; }
 
 /* education: second school sits a card-gap below the first */
 .edu + .edu { margin-top: var(--gap); }
+
+/* education cards use the work-experience header: logo plate, name and degree, dates with place and coordinates */
+.edu { display: block; }
+.edu .stop-head { display: flex; justify-content: space-between; gap: 6px 20px; flex-wrap: wrap; align-items: center; }
+.edu h3 { font-size: clamp(22px, 2.4vw, 26px); line-height: 1.15; }
+.edu .role { color: var(--lichen); margin: 4px 0 0; font-size: 15px; }
+.edu .when { font-family: var(--f-mono); font-size: 13px; color: var(--lichen); text-align: right; font-variant-numeric: tabular-nums; }
+.edu .when .coord { display: block; font-size: 11.5px; opacity: .75; }
+.edu dl { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--moss); grid-template-columns: 92px minmax(0, 1fr); }
+/* two figures side by side with clear room between them */
+.edu dd.pair { display: flex; flex-wrap: wrap; gap: 6px 0; }
+.edu dd.pair span + span { margin-left: 22px; padding-left: 22px; border-left: 1px solid var(--moss); }
+@media (max-width: 560px) {
+  .edu .stop-head { flex-direction: column; align-items: flex-start; }
+  .edu .when { text-align: left; }
+  .edu dl { grid-template-columns: 1fr; gap: 2px 0; }
+  .edu dl dd { margin-bottom: 10px; }
+}
+/* keep the dates on the right; long degree lines wrap instead */
+@media (min-width: 561px) {
+  .edu .stop-head { flex-wrap: nowrap; }
+  .edu .co { flex: 1 1 auto; }
+  .edu .when { flex: none; }
+}
+.edu .logo img { max-height: 44px; }
