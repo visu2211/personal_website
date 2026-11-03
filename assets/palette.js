@@ -25,7 +25,7 @@
     const add = (group, label, icon, run, extra = {}) => list.push({ group, label, icon, run, ...extra });
 
     // plain words people type for each section, since the labels are trail-themed
-    const KEYS = { notes: 'about me bio', basecamp: 'education school rutgers gpa', log: 'work experience jobs internships capital one', projects: 'projects built portfolio',
+    const KEYS = { notes: 'about me bio', basecamp: 'education school rutgers high school wwp gpa sat', log: 'work experience jobs internships capital one', projects: 'projects built portfolio',
       pack: 'skills tech stack languages', drills: 'leetcode coding problems practice', badges: 'leadership teaching ta involvement', eagle: 'eagle scout scouting', side: 'hobbies beyond scrapbook',
       campfire: 'contact talk email', training: 'gym lifting running hevy strava', music: 'spotify songs listening', chess: 'chess rating', court: 'hobbies volleyball motorcycle games ps5',
       map: 'globe places', journal: 'photos trips' };

@@ -603,3 +603,8 @@ html.cmdk-open { overflow: hidden; }
 .lc-months { overflow: hidden; column-gap: 3px; }
 .lc-cal { padding: 18px 16px; }
 @media (max-width: 560px) { .lc-heat { gap: 2px; } .lc-months { column-gap: 2px; font-size: 10px; } .lc-cal { padding: 14px 12px; } }
+
+/* education: second school sits a card-gap below the first; schools without a logo file get a lettered mark */
+.edu + .edu { margin-top: var(--gap); }
+.org.mark { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--ember); color: var(--ember);
+  font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .04em; font-weight: 500; }
