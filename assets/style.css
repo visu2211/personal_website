@@ -631,3 +631,9 @@ html.cmdk-open { overflow: hidden; }
   .edu .when { flex: none; }
 }
 .edu .logo img { max-height: 44px; }
+
+/* one row of figures: GPA on the left, tests on the right */
+.edu dl.edu-row { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px 32px; }
+.edu dl.edu-row > div { display: flex; align-items: baseline; gap: 18px; }
+.edu dl.edu-row dd { margin: 0; }
+@media (max-width: 560px) { .edu dl.edu-row { flex-direction: column; gap: 10px; } .edu dl.edu-row > div { flex-direction: column; gap: 2px; } }
