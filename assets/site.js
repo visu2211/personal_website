@@ -76,6 +76,37 @@
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawTopo, 200); });
   drawTopo();
 
+  /* ---------- light / dark toggle ---------- */
+  // the page's theme is set in <head> before paint; this adds the nav button and keeps the choice
+  const nav = document.querySelector('.site-nav .inner');
+  window.setTheme = (theme) => {
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem('theme', theme); } catch {}
+    drawTopo();   // contour colours come from the theme
+    swapThemeImages();
+    dispatchEvent(new CustomEvent('themechange', { detail: theme }));
+  };
+  // images with a light-mode version (e.g. a wordmark with light lettering) swap with the theme
+  function swapThemeImages() {
+    const light = document.documentElement.dataset.theme === 'light';
+    document.querySelectorAll('img[data-light-src]').forEach((img) => {
+      if (!img.dataset.darkSrc) img.dataset.darkSrc = img.getAttribute('src');
+      const want = light ? img.dataset.lightSrc : img.dataset.darkSrc;
+      if (img.getAttribute('src') !== want) img.setAttribute('src', want);
+    });
+  }
+  swapThemeImages();
+  if (nav && document.documentElement.dataset.theme) {
+    const tb = document.createElement('button');
+    tb.type = 'button'; tb.className = 'theme-toggle';
+    const label = () => (document.documentElement.dataset.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+    tb.innerHTML = '<svg class="moon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>' +
+      '<svg class="sun" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+    tb.setAttribute('aria-label', label()); tb.title = label();
+    tb.addEventListener('click', () => { setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'); tb.setAttribute('aria-label', label()); tb.title = label(); });
+    nav.append(tb);
+  }
+
   /* ---------- lantern + firefly cursor ---------- */
   if (finePointer) {
     const root = document.documentElement;

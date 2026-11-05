@@ -14,6 +14,8 @@
     copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
     mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     fire: '<path d="M12 3c2.5 4 6 6 6 11a6 6 0 0 1-12 0c0-3 1.6-4.6 2.5-6.5.8 2 1.7 3 2.5 3-.8-3 0-5.5 1-7.5Z"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>',
     globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/>',
   };
   const svg = (k) => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
@@ -61,6 +63,10 @@
       if (here('index')) { const g = document.getElementById('grab'); goTo(document.getElementById('campfire')); setTimeout(() => g && !g.closest('.toppled') && g.click(), 700); }
       else location.href = '/#pull-up';
     }, { keys: 'campfire talk contact' });
+    if (window.setTheme) {
+      const light = document.documentElement.dataset.theme === 'light';
+      add('Settings', light ? 'Switch to dark mode' : 'Switch to light mode', light ? 'moon' : 'sun', () => setTheme(light ? 'dark' : 'light'), { keys: 'theme dark light mode appearance' });
+    }
     add('Fun', 'Spin the globe', 'globe', () => { location.href = '/world'; }, { keys: 'world map' });
     return list;
   }

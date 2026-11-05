@@ -7,6 +7,11 @@
 <meta name="description" content="Vishal Kanala: software engineer, Rutgers CS + Data Science, 2× Capital One SWE intern, Eagle Scout.">
 <meta property="og:title" content="Vishal Kanala">
 <meta property="og:description" content="Software engineer building the infrastructure that keeps AI fast, cheap, and safe.">
+<script>
+  // theme before first paint: saved choice, else the device setting
+  (function () { var t; try { t = localStorage.getItem('theme'); } catch (e) {}
+    document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); })();
+</script>
 <link rel="canonical" href="https://vishalkanala.com/">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -16,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261107">
+<link rel="stylesheet" href="assets/style.css?v=20261105">
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -28,7 +33,7 @@
 <header class="site-nav">
   <div class="inner">
     <a class="brand" href="/" aria-label="Vishal Kanala, home">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12.5 3.5 16 8l3.5-4.5" fill="none" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/><path d="M16 8 4 26h24L16 8Z" fill="#ff7b3a"/><path d="M16 13.5 12 26h3.2L16 17l.8 9H20L16 13.5Z" fill="#0d1512"/><path d="M2 27.5h28" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12.5 3.5 16 8l3.5-4.5" fill="none" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/><path d="M16 8 4 26h24L16 8Z" fill="#ff7b3a"/><path d="M16 13.5 12 26h3.2L16 17l.8 9H20L16 13.5Z" style="fill: var(--night)"/><path d="M2 27.5h28" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/></svg>
       <span>Vishal Kanala</span>
     </a>
     <ul>
@@ -61,9 +66,9 @@
   </section>
 
   <svg class="ridge" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0 150V92l90-30 80 22 120-58 110 46 90-26 130 54 120-62 110 40 100-30 120 44 110-36 130 34 140-28v138Z" fill="#141f1b"/>
-    <path d="M0 150v-30l120-26 110 20 140-40 120 34 160-22 110 26 150-38 130 32 120-18 150 30 110-14v86Z" fill="#111a17"/>
-    <path d="M0 150v-12l200-10 180 8 220-14 200 12 240-10 180 8 220-6v24Z" fill="#0d1512"/>
+    <path d="M0 150V92l90-30 80 22 120-58 110 46 90-26 130 54 120-62 110 40 100-30 120 44 110-36 130 34 140-28v138Z" style="fill: var(--ridge-1)"/>
+    <path d="M0 150v-30l120-26 110 20 140-40 120 34 160-22 110 26 150-38 130 32 120-18 150 30 110-14v86Z" style="fill: var(--ridge-2)"/>
+    <path d="M0 150v-12l200-10 180 8 220-14 200 12 240-10 180 8 220-6v24Z" style="fill: var(--ridge-3)"/>
   </svg>
 
   <section class="sec wrap" id="notes" data-trail="Field notes">
@@ -118,7 +123,7 @@
     <div class="log">
       <article class="stop reveal">
         <div class="stop-head">
-          <div class="co"><span class="logo"><img src="assets/logos/capital-one.svg" alt="Capital One logo" width="104" height="37"></span><div><h3>Capital One</h3><p class="role">Software Engineer Intern</p></div></div>
+          <div class="co"><span class="logo"><img src="assets/logos/capital-one.svg" data-light-src="assets/logos/capital-one-dark-text.svg" alt="Capital One logo" width="104" height="37"></span><div><h3>Capital One</h3><p class="role">Software Engineer Intern</p></div></div>
           <div class="when">Jun – Aug 2026<span class="coord">New York, NY · 40.71° N, 74.01° W</span></div>
         </div>
         <div class="stop-stats"><div><b>1M+</b><span>LLM requests a day</span></div><div><b>−35%</b><span>queue wait time</span></div><div><b>+60%</b><span>GPU utilization</span></div></div>
@@ -131,7 +136,7 @@
       </article>
       <article class="stop reveal">
         <div class="stop-head">
-          <div class="co"><span class="logo"><img src="assets/logos/capital-one.svg" alt="Capital One logo" width="104" height="37"></span><div><h3>Capital One</h3><p class="role">Software Engineer Intern</p></div></div>
+          <div class="co"><span class="logo"><img src="assets/logos/capital-one.svg" data-light-src="assets/logos/capital-one-dark-text.svg" alt="Capital One logo" width="104" height="37"></span><div><h3>Capital One</h3><p class="role">Software Engineer Intern</p></div></div>
           <div class="when">Jun – Aug 2025<span class="coord">McLean, VA · 38.93° N, 77.18° W</span></div>
         </div>
         <div class="stop-stats"><div><b>$1M+</b><span>saved per year</span></div><div><b>50M+</b><span>documents scanned</span></div><div><b>−90%</b><span>false positives</span></div></div>
@@ -380,11 +385,11 @@
 
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span><a href="/beyond" style="color:inherit">Next: beyond code →</a></span></div></footer>
 
-<script src="assets/site.js?v=20261107"></script>
-<script src="assets/palette.js?v=20261107"></script>
-<script src="assets/chess.js?v=20261107"></script>
+<script src="assets/site.js?v=20261105"></script>
+<script src="assets/palette.js?v=20261105"></script>
+<script src="assets/chess.js?v=20261105"></script>
 <script src="assets/photos.js"></script>
-<script src="assets/places.js"></script>
+<script src="assets/places.js?v=20261103"></script>
 <script>
   // Eagle Scout strip: up to three photos from the "Eagle Scout" album; text only until there are some
   const eagle = (window.PHOTOS || []).filter((p) => p.album === 'Eagle Scout').slice(0, 3);

@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Beyond Code · Vishal Kanala</title>
 <meta name="description" content="Lifting, running, volleyball, chess, motorcycles and video games, plus live chess.com stats.">
+<script>
+  // theme before first paint: saved choice, else the device setting
+  (function () { var t; try { t = localStorage.getItem('theme'); } catch (e) {}
+    document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); })();
+</script>
 <link rel="canonical" href="https://vishalkanala.com/beyond">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -14,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261107">
+<link rel="stylesheet" href="assets/style.css?v=20261105">
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
 <style>
   .page-head { padding-block: clamp(60px, 10vw, 120px) 0; }
@@ -157,7 +162,7 @@
   .hobbies { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); margin-top: var(--stack); }
   .hobby { position: relative; padding: var(--pad); border: 1px solid var(--moss); border-radius: var(--radius); background: color-mix(in srgb, var(--pine) 85%, transparent); overflow: hidden; min-width: 0; scroll-margin-top: 80px; }
   .hobby h3 { font-size: 30px; margin-top: 18px; }
-  .hobby p { margin: 8px 0 0; color: #d4cfc0; max-width: 46ch; }
+  .hobby p { margin: 8px 0 0; color: var(--soft); max-width: 46ch; }
   .hobby .tagline { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--lichen); margin-top: 16px; }
   .clip { display: flex; align-items: center; gap: 14px; margin-top: 20px; padding: 12px 16px 12px 12px; border-radius: 12px; text-decoration: none;
     background: var(--night); border: 1px solid var(--moss); transition: border-color .25s, transform .25s; }
@@ -255,7 +260,7 @@
 <header class="site-nav">
   <div class="inner">
     <a class="brand" href="/" aria-label="Vishal Kanala, home">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12.5 3.5 16 8l3.5-4.5" fill="none" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/><path d="M16 8 4 26h24L16 8Z" fill="#ff7b3a"/><path d="M16 13.5 12 26h3.2L16 17l.8 9H20L16 13.5Z" fill="#0d1512"/><path d="M2 27.5h28" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12.5 3.5 16 8l3.5-4.5" fill="none" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/><path d="M16 8 4 26h24L16 8Z" fill="#ff7b3a"/><path d="M16 13.5 12 26h3.2L16 17l.8 9H20L16 13.5Z" style="fill: var(--night)"/><path d="M2 27.5h28" stroke="#ff7b3a" stroke-width="1.8" stroke-linecap="round"/></svg>
       <span>Vishal Kanala</span>
     </a>
     <ul>
@@ -453,9 +458,9 @@
 
 <footer><div class="wrap"><span>© 2026 Vishal Kanala</span><span class="credits">Controller model: <a href="https://sketchfab.com/3d-models/playstation-5-dualsense-878c1f882808477ab81c2fe86d5a3936" target="_blank" rel="noopener">“Playstation 5 Dualsense”</a> by AHarmlessPotato, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span><span><a href="/scrapbook" style="color:inherit">Next: the scrapbook →</a></span></div></footer>
 
-<script src="assets/site.js?v=20261107"></script>
-<script src="assets/palette.js?v=20261107"></script>
-<script src="assets/chess.js?v=20261107"></script>
+<script src="assets/site.js?v=20261105"></script>
+<script src="assets/palette.js?v=20261105"></script>
+<script src="assets/chess.js?v=20261105"></script>
 <script src="assets/hevy-data.js"></script>
 <script src="assets/strava-data.js"></script>
 <script>
