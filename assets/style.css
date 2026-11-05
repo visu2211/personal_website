@@ -663,8 +663,8 @@ html.cmdk-open { overflow: hidden; }
 
 /* ---------- light mode: the same camp by daylight ---------- */
 html[data-theme="light"] {
-  --night: #f3eee3;      /* sand-coloured paper */
-  --pine: #eae3d3;       /* raised surfaces */
+  --night: #eae3d3;      /* beige ground */
+  --pine: #f8f5ee;       /* raised surfaces: lighter cream cards */
   --moss: #d2c8b2;       /* rules, borders */
   --bone: #1e2b25;       /* forest-green ink */
   --lichen: #5b6a60;
@@ -673,7 +673,7 @@ html[data-theme="light"] {
   --win: #2f8a47; --loss: #c2402e; --draw: #5b6a60;
   --soft: #3a463f;
   --figure: #5b4a36;
-  --ridge-1: #e8e0cf; --ridge-2: #ede6d8; --ridge-3: #f3eee3;
+  --ridge-1: #ddd4c0; --ridge-2: #e3dbca; --ridge-3: #eae3d3;
   --vignette: #b9ab8a33;
   color-scheme: light;
 }
