@@ -1,12 +1,20 @@
-// Published from the upload page (Hevy export) on 2026-11-03.
+// Published from the upload page (Hevy export) on 2026-11-07.
 window.HEVY = {
-  "generated": "2026-11-03",
-  "totalWorkouts": 123,
+  "generated": "2026-11-07",
+  "totalWorkouts": 124,
   "since": "2025-09-24",
-  "thisYear": 93,
-  "last30": 6,
-  "totalVolumeLbs": 918992,
+  "thisYear": 94,
+  "last30": 5,
+  "totalVolumeLbs": 928324,
   "recent": [
+    {
+      "title": "Chest + Bicep + Rear Delt",
+      "date": "2026-11-07",
+      "minutes": 78,
+      "exercises": 7,
+      "sets": 15,
+      "volumeLbs": 9333
+    },
     {
       "title": "Afternoon workout 💪",
       "date": "2026-11-03",
@@ -38,17 +46,10 @@ window.HEVY = {
       "exercises": 5,
       "sets": 13,
       "volumeLbs": 3799
-    },
-    {
-      "title": "Back + Shoulders + Triceps",
-      "date": "2026-10-07",
-      "minutes": 63,
-      "exercises": 6,
-      "sets": 14,
-      "volumeLbs": 8108
     }
   ],
   "days": {
+    "2026-11-07": 1,
     "2026-11-03": 1,
     "2026-11-02": 1,
     "2026-10-29": 1,
@@ -86,7 +87,6 @@ window.HEVY = {
     "2026-06-26": 1,
     "2026-06-25": 1,
     "2026-06-23": 1,
-    "2026-06-22": 1,
-    "2026-06-16": 1
+    "2026-06-22": 1
   }
 };
